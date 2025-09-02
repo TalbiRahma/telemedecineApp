@@ -2,13 +2,12 @@ package com.telemedecine.api;
 
 import com.telemedecine.api.auth.AuthenticationService;
 import com.telemedecine.api.auth.RegisterRequest;
-import com.telemedecine.api.domain.user.Role;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import static com.telemedecine.api.domain.user.Role.*;
+import static com.telemedecine.api.user.Role.*;
 
 @SpringBootApplication
 public class TelemedecineApplication {

@@ -16,6 +16,7 @@ import java.awt.datatransfer.StringSelection;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class AuthenticationResponse {
 
+    @JsonProperty("access_token")
     private String accessToken;
     private String refreshToken;
     private boolean mfaEnabled;

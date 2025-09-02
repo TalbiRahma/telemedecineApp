@@ -1,11 +1,11 @@
 package com.telemedecine.api.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.telemedecine.api.domain.token.Token;
-import com.telemedecine.api.domain.token.TokenType;
-import com.telemedecine.api.domain.user.UserEntity;
-import com.telemedecine.api.infrastructure.persistence.repository.TokenRepository;
-import com.telemedecine.api.infrastructure.persistence.repository.UserRepository;
+import com.telemedecine.api.token.Token;
+import com.telemedecine.api.token.TokenType;
+import com.telemedecine.api.user.UserEntity;
+import com.telemedecine.api.token.TokenRepository;
+import com.telemedecine.api.user.UserRepository;
 import com.telemedecine.api.security.JwtService;
 import com.telemedecine.api.security.tfa.TwoFactorAuthenticationService;
 import jakarta.persistence.EntityNotFoundException;
@@ -15,11 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Service;
 
 import org.springframework.http.HttpHeaders;

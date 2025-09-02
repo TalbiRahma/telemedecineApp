@@ -1,6 +1,6 @@
 package com.telemedecine.api.config;
 
-import com.telemedecine.api.infrastructure.persistence.repository.TokenRepository;
+import com.telemedecine.api.token.TokenRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

@@ -1,0 +1,20 @@
+### GET request to example server
+GET https://examples.http-client.intellij.net/get
+    ?generated-in=IntelliJ IDEA
+
+### Register User
+POST http://localhost:8080/api/v1/auth/register
+Content-Type: application/json
+
+{
+  "firstname": "Rahma",
+  "lastname": "Talbi",
+  "email": "Talbir2@gmail.com",
+  "password": "123",
+  "role": "ADMIN"
+}
+
+> {% client.global.set("auth-token", response.body.access_token); %}
+### Query the demo endpoint
+GET http://localhost:8080/api/v1/auth
+Authorization: Bearer {{auth-token}}

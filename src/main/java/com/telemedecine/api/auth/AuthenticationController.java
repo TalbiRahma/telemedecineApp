@@ -23,7 +23,11 @@ public class AuthenticationController {
         if (request.isMfaEnabled()){
             return ResponseEntity.ok(response);
         }
-        return ResponseEntity.accepted().build();
+        return ResponseEntity.ok(AuthenticationResponse.builder()
+                .accessToken(response.getAccessToken())
+                .refreshToken(response.getRefreshToken())
+                .build()
+        );
     }
 
     @PostMapping("/authenticate")
