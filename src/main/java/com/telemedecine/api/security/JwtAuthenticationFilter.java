@@ -1,6 +1,6 @@
 package com.telemedecine.api.security;
 
-import com.telemedecine.api.token.TokenRepository;
+import com.telemedecine.api.dao.TokenRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

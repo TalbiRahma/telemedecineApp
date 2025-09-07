@@ -1,0 +1,50 @@
+@id = 1
+
+### GET request to example server
+GET https://examples.http-client.intellij.net/get
+    ?generated-in=IntelliJ IDEA
+
+
+### ADMIN login
+POST  http://localhost:8080/api/v1/auth/authenticate
+Content-Type: application/json
+
+{
+  "email": "admin@gmail.com",
+  "password": "admin"
+}
+
+> {% client.global.set("auth-token", response.body.access_token); %}
+
+### ADD Specialty
+POST http://localhost:8080/api/v1/specialties/add
+Content-Type: application/json
+Authorization: Bearer {{auth-token}}
+
+{
+  "name": "Neurologie",
+  "description": "Spécialité du système nerveux"
+}
+
+### GET All Specialties
+GET http://localhost:8080/api/v1/specialties/all
+Content-Type: application/json
+Authorization: Bearer {{auth-token}}
+
+### GET Specialty By ID
+GET http://localhost:8080/api/v1/specialties/{{id}}
+Content-Type: application/json
+Authorization: Bearer {{auth-token}}
+
+### EDIT Specialty
+PUT http://localhost:8080/api/v1/specialties/edit/{{id}}
+Content-Type: application/json
+Authorization: Bearer {{auth-token}}
+
+{
+  "name": "Cardiologie Interventielle",
+  "description": "Sous-spécialité de la cardiologie"
+}
+
+
+

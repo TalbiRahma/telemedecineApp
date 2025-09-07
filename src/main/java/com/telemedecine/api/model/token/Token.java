@@ -1,6 +1,6 @@
-package com.telemedecine.api.token;
+package com.telemedecine.api.model.token;
 
-import com.telemedecine.api.user.UserEntity;
+import com.telemedecine.api.model.user.UserEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

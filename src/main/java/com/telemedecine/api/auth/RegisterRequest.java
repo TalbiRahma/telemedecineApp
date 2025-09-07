@@ -1,6 +1,6 @@
 package com.telemedecine.api.auth;
 
-import com.telemedecine.api.user.Role;
+import com.telemedecine.api.model.user.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

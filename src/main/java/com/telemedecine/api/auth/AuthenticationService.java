@@ -1,11 +1,11 @@
 package com.telemedecine.api.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.telemedecine.api.token.Token;
-import com.telemedecine.api.token.TokenType;
-import com.telemedecine.api.user.UserEntity;
-import com.telemedecine.api.token.TokenRepository;
-import com.telemedecine.api.user.UserRepository;
+import com.telemedecine.api.model.token.Token;
+import com.telemedecine.api.model.token.TokenType;
+import com.telemedecine.api.model.user.UserEntity;
+import com.telemedecine.api.dao.TokenRepository;
+import com.telemedecine.api.dao.UserRepository;
 import com.telemedecine.api.security.JwtService;
 import com.telemedecine.api.security.tfa.TwoFactorAuthenticationService;
 import jakarta.persistence.EntityNotFoundException;

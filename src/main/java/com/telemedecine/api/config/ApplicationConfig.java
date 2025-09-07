@@ -1,6 +1,6 @@
 package com.telemedecine.api.config;
 
-import com.telemedecine.api.user.UserRepository;
+import com.telemedecine.api.dao.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

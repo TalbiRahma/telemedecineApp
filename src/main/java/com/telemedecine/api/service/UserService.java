@@ -1,6 +1,8 @@
-package com.telemedecine.api.user;
+package com.telemedecine.api.service;
 
 import com.telemedecine.api.auth.ChangePasswordRequest;
+import com.telemedecine.api.dao.UserRepository;
+import com.telemedecine.api.model.user.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;

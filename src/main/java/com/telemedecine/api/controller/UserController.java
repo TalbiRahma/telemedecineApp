@@ -1,6 +1,7 @@
-package com.telemedecine.api.user;
+package com.telemedecine.api.controller;
 
 import com.telemedecine.api.auth.ChangePasswordRequest;
+import com.telemedecine.api.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

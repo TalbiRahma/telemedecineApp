@@ -1,5 +1,6 @@
-package com.telemedecine.api.token;
+package com.telemedecine.api.dao;
 
+import com.telemedecine.api.model.token.Token;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

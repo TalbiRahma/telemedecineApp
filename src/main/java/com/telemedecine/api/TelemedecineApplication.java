@@ -7,7 +7,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import static com.telemedecine.api.user.Role.*;
+import static com.telemedecine.api.model.user.Role.*;
 
 @SpringBootApplication
 public class TelemedecineApplication {

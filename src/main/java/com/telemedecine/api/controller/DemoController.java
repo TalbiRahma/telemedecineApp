@@ -1,4 +1,4 @@
-package com.telemedecine.api.demo;
+package com.telemedecine.api.controller;
 
 
 import org.springframework.http.ResponseEntity;

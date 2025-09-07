@@ -1,4 +1,4 @@
-package com.telemedecine.api.user;
+package com.telemedecine.api.model.user;
 
 import lombok.Getter;
 

@@ -1,4 +1,4 @@
-package com.telemedecine.api.user;
+package com.telemedecine.api.model.user;
 
 
 import lombok.Getter;
@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.telemedecine.api.user.Permission.*;
+import static com.telemedecine.api.model.user.Permission.*;
 
 @RequiredArgsConstructor
 public enum Role {
