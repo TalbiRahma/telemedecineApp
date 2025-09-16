@@ -31,6 +31,10 @@ public class SpecialtyServiceImpl implements SpecialtyService {
 
     @Override
     public SpecialtyDto createSpecialty(SpecialtyDto dto) {
+        if (dto.getName() == null || dto.getName().trim().isEmpty()) {
+            throw new IllegalArgumentException("Specialty name is required");
+        }
+
         Specialty specialty = specialtyMapper.toEntity(dto);
         Specialty saved = specialtyRepository.save(specialty);
         return specialtyMapper.toDto(saved);
@@ -39,6 +43,11 @@ public class SpecialtyServiceImpl implements SpecialtyService {
     @Override
     public SpecialtyDto updateSpecialty(SpecialtyDto dto, Long id) {
         Specialty specialty = specialtyRepository.findById(id).orElseThrow(() -> new RuntimeException("Specialty not found"));
+
+        // Validate required fields
+        if (dto.getName() == null || dto.getName().trim().isEmpty()) {
+            throw new IllegalArgumentException("Specialty name is required");
+        }
 
         specialty.setName(dto.getName());
         specialty.setDescription(dto.getDescription());

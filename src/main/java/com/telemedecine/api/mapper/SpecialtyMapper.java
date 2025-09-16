@@ -5,18 +5,53 @@ import com.telemedecine.api.model.Specialty;
 import org.mapstruct.Mapper;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring", implementationName = "SpecialtyServiceMapperImpl")
+@Mapper(componentModel = "spring")
 public interface SpecialtyMapper {
 
-    // mapping simple
-    SpecialtyDto toDto(Specialty specialty);
+    default SpecialtyDto toDto(Specialty specialty) {
+        if (specialty == null) {
+            return null;
+        }
 
-    Specialty toEntity(SpecialtyDto dto);
+        return SpecialtyDto.builder()
+                .id(specialty.getId())
+                .name(specialty.getName())
+                .description(specialty.getDescription())
+                .createdAt(specialty.getCreatedAt())
+                .updatedAt(specialty.getUpdatedAt())
+                .build();
+    }
 
-    // mapping des listes
-    List<SpecialtyDto> toDtoList(List<Specialty> specialties);
+    default Specialty toEntity(SpecialtyDto dto) {
+        if (dto == null) {
+            return null;
+        }
 
-    List<Specialty> toEntityList(List<SpecialtyDto> specialtyDtos);
+        return Specialty.builder()
+                .id(dto.getId())
+                .name(dto.getName())
+                .description(dto.getDescription())
+                // createdAt and updatedAt are managed by Hibernate annotations
+                .build();
+    }
 
+    default List<SpecialtyDto> toDtoList(List<Specialty> specialties) {
+        if (specialties == null) {
+            return null;
+        }
+        return specialties.stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
+    }
+
+    default List<Specialty> toEntityList(List<SpecialtyDto> specialtyDtos) {
+        if (specialtyDtos == null) {
+            return null;
+        }
+        return specialtyDtos.stream()
+                .map(this::toEntity)
+                .collect(Collectors.toList());
+    }
 }

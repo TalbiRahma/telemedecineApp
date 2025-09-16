@@ -2,6 +2,7 @@ package com.telemedecine.api;
 
 import com.telemedecine.api.auth.AuthenticationService;
 import com.telemedecine.api.auth.RegisterRequest;
+import com.telemedecine.api.dto.SpecialtyDto;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -47,6 +48,13 @@ public class TelemedecineApplication {
                     .role(PATIENT)
                     .build();
             System.out.println("Patient token: " + service.register(patient).getAccessToken());
+
+            var specialty = SpecialtyDto.builder()
+                    .name("CARDIOLOGY")
+                    .description("specialty description")
+                    .build();
+
         };
+
     }
 }

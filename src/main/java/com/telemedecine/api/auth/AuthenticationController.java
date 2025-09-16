@@ -1,10 +1,13 @@
 package com.telemedecine.api.auth;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
@@ -17,7 +20,7 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(
-            @RequestBody RegisterRequest request
+            @Valid @RequestBody RegisterRequest request
     ) {
         var response = service.register(request);
         if (request.isMfaEnabled()){
@@ -28,6 +31,18 @@ public class AuthenticationController {
                 .refreshToken(response.getRefreshToken())
                 .build()
         );
+    }
+
+    @PostMapping("/register/doctor")
+    public ResponseEntity<AuthenticationResponse> registerDoctor(
+            @RequestPart("request") String requestJson,
+            @RequestParam("image") MultipartFile image) throws IOException {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        DoctorRegisterRequest request = objectMapper.readValue(requestJson, DoctorRegisterRequest.class);
+
+        AuthenticationResponse response = service.registerDoctor(request, image);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/authenticate")

@@ -1,13 +1,19 @@
 package com.telemedecine.api.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.telemedecine.api.dao.DoctorRepository;
+import com.telemedecine.api.dao.SpecialtyRepository;
+import com.telemedecine.api.mapper.SpecialtyMapper;
+import com.telemedecine.api.model.Specialty;
 import com.telemedecine.api.model.token.Token;
 import com.telemedecine.api.model.token.TokenType;
+import com.telemedecine.api.model.user.Doctor;
 import com.telemedecine.api.model.user.UserEntity;
 import com.telemedecine.api.dao.TokenRepository;
 import com.telemedecine.api.dao.UserRepository;
 import com.telemedecine.api.security.JwtService;
 import com.telemedecine.api.security.tfa.TwoFactorAuthenticationService;
+import com.telemedecine.api.service.CloudinaryService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -19,6 +25,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import org.springframework.http.HttpHeaders;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
@@ -27,11 +34,15 @@ import java.io.IOException;
 public class AuthenticationService {
 
     private final UserRepository userRepository;
+    private final DoctorRepository doctorRepository;
     private final TokenRepository tokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final TwoFactorAuthenticationService tfaService;
+    private final SpecialtyRepository specialtyRepository;
+    private final SpecialtyMapper specialtyMapper;
+    private final CloudinaryService cloudinaryService;
 
     public AuthenticationResponse register(RegisterRequest request){
         var user = UserEntity.builder()
@@ -62,6 +73,56 @@ public class AuthenticationService {
                 .build();
     }
 
+    public AuthenticationResponse registerDoctor(DoctorRegisterRequest request, MultipartFile image) throws IOException{
+
+        // Upload license file
+        String imageUrl = cloudinaryService.uploadImage(image);
+
+        // Fetch specialty by ID from the repository
+        Specialty specialty = specialtyRepository.findById(request.getSpecialtyId())
+                .orElseThrow(() -> new RuntimeException("Specialty not found with id: " + request.getSpecialtyId()));
+
+        Doctor doctor = new Doctor();
+        doctor.setFirstname(request.getFirstname());
+        doctor.setLastname(request.getLastname());
+        doctor.setEmail(request.getEmail());
+        doctor.setPassword(passwordEncoder.encode(request.getPassword()));
+        doctor.setRole(request.getRole());
+        doctor.setCertificationUrl(imageUrl);
+        doctor.setLicenseNumber(request.getLicenseNumber());
+        doctor.setSpecialty(specialty);
+        doctor.setMfaEnabled(request.isMfaEnabled());
+
+        // if MFA enabled --> Generate Secret
+        if (request.isMfaEnabled()) {
+            String secret = tfaService.generateNewSecret();
+            doctor.setSecret(secret);
+        }
+
+        var savedDoctor = doctorRepository.save(doctor);
+
+        String secretImageUri = null;
+        if (savedDoctor.isMfaEnabled()) {
+            secretImageUri = tfaService.generateQrCodeImageUri(savedDoctor.getSecret());
+        }
+
+        var jwtToken = jwtService.generateToken(doctor);
+        var refreshToken = jwtService.generateRefreshToken(savedDoctor);
+
+        saveUserToken(savedDoctor, jwtToken);
+
+        // Create response without builder
+        AuthenticationResponse response = new AuthenticationResponse();
+        response.setSecretImageUri(secretImageUri);
+        response.setAccessToken(jwtToken);
+        response.setRefreshToken(refreshToken);
+        response.setMfaEnabled(doctor.isMfaEnabled());
+
+        return response;
+    }
+
+
+
     public AuthenticationResponse authenticate(AuthenticationRequest request){
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -72,8 +133,10 @@ public class AuthenticationService {
         var user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow();
         if (user.isMfaEnabled()) {
+            String qrCodeImageUri = tfaService.generateQrCodeImageUri(user.getSecret());
             return  AuthenticationResponse.builder()
                     .mfaEnabled(true)
+                    .secretImageUri(qrCodeImageUri)
                     .accessToken("")
                     .refreshToken("")
                     .build();
@@ -156,8 +219,13 @@ public class AuthenticationService {
             throw new BadCredentialsException("Code is not correct");
         }
         var jwtToken = jwtService.generateToken(user);
+        var refreshToken = jwtService.generateRefreshToken(user); // Add this
+        revokeAllUserTokens(user); // Add this
+        saveUserToken(user, jwtToken); // Add this
+
         return AuthenticationResponse.builder()
                 .accessToken(jwtToken)
+                .refreshToken(refreshToken)// Add this
                 .mfaEnabled(user.isMfaEnabled())
                 .build();
     }

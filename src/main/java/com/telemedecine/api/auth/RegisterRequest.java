@@ -1,5 +1,6 @@
 package com.telemedecine.api.auth;
 
+import com.telemedecine.api.dto.SpecialtyDto;
 import com.telemedecine.api.model.user.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,6 +18,7 @@ public class RegisterRequest {
     private String email;
     private String password;
     private Role role;
+    private SpecialtyDto specialty;
 
     private boolean mfaEnabled;
 }

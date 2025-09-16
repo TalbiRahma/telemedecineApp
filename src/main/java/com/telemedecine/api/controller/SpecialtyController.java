@@ -2,6 +2,7 @@ package com.telemedecine.api.controller;
 
 import com.telemedecine.api.dto.SpecialtyDto;
 import com.telemedecine.api.service.SpecialtyService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +33,8 @@ public class SpecialtyController {
 
     @PostMapping("/add")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<SpecialtyDto> create(@RequestBody SpecialtyDto dto) {
+    public ResponseEntity<SpecialtyDto> create(@Valid @RequestBody SpecialtyDto dto) {
+        System.out.println(">>> Received DTO: " + dto); // 🟢 debug
         return ResponseEntity.ok(specialtyService.createSpecialty(dto));
     }
 
@@ -40,7 +42,7 @@ public class SpecialtyController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<SpecialtyDto> update(
             @PathVariable Long id,
-            @RequestBody SpecialtyDto dto
+            @Valid @RequestBody SpecialtyDto dto
     ){
         return ResponseEntity.ok(specialtyService.updateSpecialty(dto, id));
     }

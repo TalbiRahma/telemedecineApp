@@ -8,7 +8,7 @@ describe('Register', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [Register]
+      imports: [Register]
     })
     .compileComponents();
 
@@ -20,4 +20,4 @@ describe('Register', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-});
+}); 
