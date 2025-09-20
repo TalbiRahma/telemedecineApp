@@ -19,4 +19,20 @@ export class SpecialtyService {
    getAllSpecialties(): Observable<Specialty[]> {
     return this.http.get<Specialty[]>(`${this.baseUrl}/all`);
   }
+
+  getById(id: number): Observable<Specialty> {
+    return this.http.get<Specialty>(`${this.baseUrl}/${id}`);
+  }
+
+  add(specialty: Partial<Specialty>): Observable<Specialty> {
+    return this.http.post<Specialty>(`${this.baseUrl}/add`, specialty);
+  }
+
+   update(id: number, specialty: Partial<Specialty>): Observable<Specialty> {
+    return this.http.put<Specialty>(`${this.baseUrl}/edit/${id}`, specialty);
+  }
+
+   delete(id: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/delete/${id}`, { responseType: 'text' });
+  }
 }

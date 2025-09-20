@@ -6,6 +6,7 @@ import { TwoFaPage } from './pages/two-fa-page/two-fa-page';
 import { AdminDashboardPage } from './pages/admin-dashboard-page/admin-dashboard-page';
 import { AdminDoctorsListPage } from './pages/admin-doctors-list-page/admin-doctors-list-page';
 import { AdminOverviewPage } from './pages/admin-overview-page/admin-overview-page';
+import { AdminSpecialtiesListPage } from './pages/admin-specialties-list-page/admin-specialties-list-page';
 
 export const routes: Routes = [
     {
@@ -26,7 +27,8 @@ export const routes: Routes = [
         children: [          
             { path: '', redirectTo: 'overview', pathMatch: 'full' },
             { path: 'overview', component: AdminOverviewPage },  
-            { path: 'users/doctors', component: AdminDoctorsListPage }
+            { path: 'users/doctors', component: AdminDoctorsListPage },
+            { path: 'specialties-management', component: AdminSpecialtiesListPage }
         ]
     },
     {
