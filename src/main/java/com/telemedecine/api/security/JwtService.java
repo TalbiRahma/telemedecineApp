@@ -61,10 +61,18 @@ public class JwtService {
             UserDetails userDetails,
             long expiration
     ){
+        // Extract only the ROLE_xxx authority
+        String role = userDetails.getAuthorities()
+                .stream()
+                .map(auth -> auth.getAuthority())
+                .filter(auth -> auth.startsWith("ROLE_"))
+                .findFirst()
+                .orElse(null);
         return Jwts
                 .builder()
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
+                .claim("role", role != null ? role.replace("ROLE_", "") : null)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)

@@ -21,7 +21,7 @@ public class TelemedecineApplication {
     public CommandLineRunner commandLineRunner(
             AuthenticationService service
     ) {
-        return args -> {
+       return args -> {
             var admin = RegisterRequest.builder()
                     .firstname("admin")
                     .lastname("admin")

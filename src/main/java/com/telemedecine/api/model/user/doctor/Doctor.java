@@ -1,15 +1,13 @@
-package com.telemedecine.api.model.user;
+package com.telemedecine.api.model.user.doctor;
 
 import com.telemedecine.api.model.Specialty;
+import com.telemedecine.api.model.user.UserEntity;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
 @Data
 @AllArgsConstructor
@@ -17,6 +15,7 @@ import lombok.experimental.SuperBuilder;
 @Entity
 @Table(name = "doctor")
 @DiscriminatorValue("DOCTOR")
+@PrimaryKeyJoinColumn(name = "user_id")
 public class Doctor extends UserEntity {
 
 
@@ -37,4 +36,7 @@ public class Doctor extends UserEntity {
     @Column(name = "certification_image")
     private String certificationUrl;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, columnDefinition = "varchar(20) default 'PENDING'")
+    private DoctorState  state;
 }

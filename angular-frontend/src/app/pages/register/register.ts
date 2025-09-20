@@ -33,7 +33,10 @@ export class Register implements OnInit {
    
   };
 
-  authResponse: AuthenticationResponse = {};
+  authResponse: AuthenticationResponse = {
+     accessToken: '',
+    refreshToken: ''
+  };
   message = '';
   otpCode = '';
   specialties: Specialty[] = [];

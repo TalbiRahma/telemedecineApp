@@ -16,7 +16,10 @@ export class TwoFa {
 
    authRequest: AuthenticationRequest = {};
   otpCode: any;
-  authResponse: AuthenticationResponse = {};
+  authResponse: AuthenticationResponse = {
+     accessToken: '',
+    refreshToken: ''
+  };
 
   constructor(
     private authService: Authentication,

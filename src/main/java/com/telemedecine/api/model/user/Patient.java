@@ -1,9 +1,6 @@
 package com.telemedecine.api.model.user;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.DiscriminatorValue;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,6 +15,7 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "patient")
 @DiscriminatorValue("PATIENT")
+@PrimaryKeyJoinColumn(name = "user_id")
 public class Patient extends UserEntity{
 
     private LocalDate dateOfBirth;

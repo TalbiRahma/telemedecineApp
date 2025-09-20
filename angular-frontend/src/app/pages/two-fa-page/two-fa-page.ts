@@ -18,7 +18,10 @@ export class TwoFaPage  implements OnInit{
   otpCode: any ;
   email: string = '';
   secretImageUri: any; 
-  authResponse: AuthenticationResponse = {};
+  authResponse: AuthenticationResponse = {
+     accessToken: '',
+    refreshToken: ''
+  };
     isLoading: boolean = false;
 
   constructor(
@@ -135,7 +138,7 @@ verifyCode() {
         
         if (response.accessToken) {
           localStorage.setItem('token', response.accessToken);
-          this.router.navigate(['welcome']);
+          this.redirectBasedOnRole();
         } else {
           // Handle case where token is missing but verification succeeded
           console.warn('Verification successful but no access token received');
@@ -153,4 +156,22 @@ verifyCode() {
     });
 }
 
+redirectBasedOnRole() {
+  const role = this.authService.getUserRole();
+  
+  switch (role) {
+    case 'ADMIN':
+      this.router.navigate(['/admin/dashboard']);
+      break;
+    case 'DOCTOR':
+      this.router.navigate(['/doctor/dashboard']);
+      break;
+    case 'PATIENT':
+      this.router.navigate(['/patient/dashboard']);
+      break;
+    default:
+      this.router.navigate(['/welcome']);
+      break;
+  }
+}
 }

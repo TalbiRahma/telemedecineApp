@@ -17,7 +17,10 @@ import { FormsModule } from '@angular/forms';
 export class Login {
   authRequest: AuthenticationRequest = {};
   optCode: any;
-  authResponse: AuthenticationResponse = {};
+  authResponse: AuthenticationResponse = {
+    accessToken: '',
+    refreshToken: ''
+  };
   email: string = '';
   secretImageUri: string = '';
   otpCode: string = '';
@@ -60,8 +63,12 @@ export class Login {
     console.log("Login response:", response);
 
     if (response.accessToken) {
-              localStorage.setItem('token', response.accessToken);
+              localStorage.setItem('authToken', response.accessToken);
     }
+
+    if (response.refreshToken) {
+        localStorage.setItem('refreshToken', response.refreshToken);
+      }
 
     if (response.mfaEnabled) {
       // Show Tailwind modal instead of alert
@@ -73,8 +80,12 @@ export class Login {
               
     } else {
       if (response.accessToken) {
-        localStorage.setItem('token', response.accessToken);
-        this.router.navigate(['welcome']);
+        localStorage.setItem('authToken', response.accessToken);
+      
+      if (response.refreshToken) {
+        localStorage.setItem('refreshToken', response.refreshToken);
+      }
+          this.redirectBasedOnRole();
       } else {
         alert("Login successful but no token received");
       }
@@ -88,6 +99,7 @@ export class Login {
 
   }
 
+  
   /*verifyCode(){
     const verifyRequest: VerificationRequest ={
       email: this.authRequest.email,
@@ -114,6 +126,22 @@ goTo2FA() {
         secretImageUri: this.pendingSecretImageUri }
   });
 }
-
-
+redirectBasedOnRole() {
+  const role = this.authService.getUserRole();
+  
+  switch (role) {
+    case 'ADMIN':
+      this.router.navigate(['/admin-dashboard/overview']);
+      break;
+    case 'DOCTOR':
+      this.router.navigate(['/doctor/dashboard']);
+      break;
+    case 'PATIENT':
+      this.router.navigate(['/patient/dashboard']);
+      break;
+    default:
+      this.router.navigate(['/welcome']);
+      break;
+  }
+}
 }

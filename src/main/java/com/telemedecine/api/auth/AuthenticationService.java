@@ -7,10 +7,11 @@ import com.telemedecine.api.mapper.SpecialtyMapper;
 import com.telemedecine.api.model.Specialty;
 import com.telemedecine.api.model.token.Token;
 import com.telemedecine.api.model.token.TokenType;
-import com.telemedecine.api.model.user.Doctor;
+import com.telemedecine.api.model.user.doctor.Doctor;
 import com.telemedecine.api.model.user.UserEntity;
 import com.telemedecine.api.dao.TokenRepository;
 import com.telemedecine.api.dao.UserRepository;
+import com.telemedecine.api.model.user.doctor.DoctorState;
 import com.telemedecine.api.security.JwtService;
 import com.telemedecine.api.security.tfa.TwoFactorAuthenticationService;
 import com.telemedecine.api.service.CloudinaryService;
@@ -91,6 +92,7 @@ public class AuthenticationService {
         doctor.setCertificationUrl(imageUrl);
         doctor.setLicenseNumber(request.getLicenseNumber());
         doctor.setSpecialty(specialty);
+        doctor.setState(DoctorState.PENDING);
         doctor.setMfaEnabled(request.isMfaEnabled());
 
         // if MFA enabled --> Generate Secret
