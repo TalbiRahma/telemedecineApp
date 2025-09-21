@@ -81,13 +81,16 @@ export class Register implements OnInit {
         next: (response) => {
             this.authResponse = response;
             if (response.accessToken) {
-              localStorage.setItem('token', response.accessToken);
-            } 
+            localStorage.setItem('authToken', response.accessToken);
+                }
+            if (response.refreshToken) {
+              localStorage.setItem('refreshToken', response.refreshToken);
+            }
             //
             if (this.registerRequest.mfaEnabled === false ){
                this.message = 'Account created successfullt\nYou will be redirected to the login page in 3 secondes'
             setTimeout(() => {
-              this.router.navigate(['welcome']);
+              this.redirectBasedOnRole();
             }, 3000)
             }else {
               console.log('email', this.registerRequest.email);
@@ -134,8 +137,11 @@ export class Register implements OnInit {
       this.message = 'Doctor account created successfully!\nRedirecting to login page...';
       
       if (response.accessToken) {
-        localStorage.setItem('token', response.accessToken);
-      }
+            localStorage.setItem('authToken', response.accessToken);
+                }
+            if (response.refreshToken) {
+              localStorage.setItem('refreshToken', response.refreshToken);
+            }
 
       if (this.doctorRegisterRequest.mfaEnabled === false ){
                this.message = 'Account created successfullt\nYou will be redirected to the login page in 3 secondes'
@@ -173,7 +179,7 @@ export class Register implements OnInit {
           this.message = 'Account created successfullt\nYou will be redirected to the welcome page in 3 secondes'
           setTimeout(() => {
             localStorage.setItem('token', response.accessToken as string);
-            this.router.navigate(['welcome']);
+            this.redirectBasedOnRole();
           }, 3000);
         }
       })
@@ -185,4 +191,23 @@ export class Register implements OnInit {
       this.selectedFile = target.files[0];
     }
   }
+
+  redirectBasedOnRole() {
+  const role = this.authService.getUserRole();
+  
+  switch (role) {
+    case 'ADMIN':
+      this.router.navigate(['/admin-dashboard/overview']);
+      break;
+    case 'DOCTOR':
+      this.router.navigate(['/doctor-dashboard']);
+      break;
+    case 'PATIENT':
+      this.router.navigate(['/patient-dashboard']);
+      break;
+    default:
+      this.router.navigate(['/welcome']);
+      break;
+  }
+}
 } 

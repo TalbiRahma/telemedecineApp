@@ -7,6 +7,8 @@ import { AdminDashboardPage } from './pages/admin-dashboard-page/admin-dashboard
 import { AdminDoctorsListPage } from './pages/admin-doctors-list-page/admin-doctors-list-page';
 import { AdminOverviewPage } from './pages/admin-overview-page/admin-overview-page';
 import { AdminSpecialtiesListPage } from './pages/admin-specialties-list-page/admin-specialties-list-page';
+import { PatientDashboardPage } from './pages/patient-dashboard-page/patient-dashboard-page';
+import { DoctorDashboardPage } from './pages/doctor-dashboard-page/doctor-dashboard-page';
 
 export const routes: Routes = [
     {
@@ -30,6 +32,16 @@ export const routes: Routes = [
             { path: 'users/doctors', component: AdminDoctorsListPage },
             { path: 'specialties-management', component: AdminSpecialtiesListPage }
         ]
+    },
+    {
+        path: 'patient-dashboard',
+        component: PatientDashboardPage,
+        
+    },
+    {
+        path: 'doctor-dashboard',
+        component: DoctorDashboardPage,
+        
     },
     {
         path: 'welcome',

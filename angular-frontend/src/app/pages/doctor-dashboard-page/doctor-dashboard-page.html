@@ -1,0 +1,45 @@
+<div class="min-h-full">
+  <!-- Navbar -->
+  <nav class="bg-gray-800">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="flex h-16 items-center justify-between">
+        <div class="flex items-center">
+          <div class="shrink-0">
+            <img src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500" alt="Logo" class="h-8 w-8" />
+          </div>
+          <div class="hidden md:block">
+            <div class="ml-10 flex items-baseline space-x-4">
+              <a routerLink="/doctor-dashboard/overview" routerLinkActive="bg-gray-900 text-white" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-white/5 hover:text-white">Dashboard</a>
+              <a routerLink="/doctor-dashboard/patients" routerLinkActive="bg-gray-900 text-white" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-white/5 hover:text-white">Patients</a>
+              <a routerLink="/doctor-dashboard/appointments" routerLinkActive="bg-gray-900 text-white" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-white/5 hover:text-white">Appointments</a>
+              <a routerLink="/doctor-dashboard/reports" routerLinkActive="bg-gray-900 text-white" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-white/5 hover:text-white">Reports</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Profile -->
+        <div class="hidden md:block">
+          <div class="ml-4 flex items-center md:ml-6">
+            <button (click)="onLogout()" class="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-md text-sm font-medium">
+              Logout
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header class="relative bg-white shadow-sm">
+    <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+      <h1 class="text-3xl font-bold tracking-tight text-gray-900">{{ getPageTitle() }}</h1>
+    </div>
+  </header>
+
+  <!-- Main content -->
+  <main>
+    <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>

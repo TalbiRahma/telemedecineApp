@@ -74,6 +74,33 @@ export class Authentication {
   );
 }
 
+logout() {
+  return this.http.post(
+    `${this.baseUrl}/logout`,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('authToken')}`
+      }
+    }
+  ).subscribe({
+    next: () => {
+      // Effacer les tokens côté frontend
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('refreshToken');
+      window.location.href = '/'; // redirect vers login
+    },
+    error: (err) => {
+      console.error('Logout error:', err);
+      // Même si backend échoue, effacer les tokens localement
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('refreshToken');
+      window.location.href = '/';
+    }
+  });
+}
+
+
 
   
 

@@ -136,8 +136,15 @@ verifyCode() {
         console.log('2FA verified successfully', response);
         this.isLoading = false;
         
+         if (response.accessToken) {
+          localStorage.setItem('authToken', response.accessToken);
+        }
+        
+        if (response.refreshToken) {
+          localStorage.setItem('refreshToken', response.refreshToken);
+        }
+
         if (response.accessToken) {
-          localStorage.setItem('token', response.accessToken);
           this.redirectBasedOnRole();
         } else {
           // Handle case where token is missing but verification succeeded
@@ -161,13 +168,13 @@ redirectBasedOnRole() {
   
   switch (role) {
     case 'ADMIN':
-      this.router.navigate(['/admin/dashboard']);
+      this.router.navigate(['/admin-dashboard/overview']);
       break;
     case 'DOCTOR':
-      this.router.navigate(['/doctor/dashboard']);
+      this.router.navigate(['/doctor-dashboard']);
       break;
     case 'PATIENT':
-      this.router.navigate(['/patient/dashboard']);
+      this.router.navigate(['/patient-dashboard']);
       break;
     default:
       this.router.navigate(['/welcome']);

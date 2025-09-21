@@ -17,7 +17,7 @@ public class TelemedecineApplication {
 		SpringApplication.run(TelemedecineApplication.class, args);
 	}
 
-    @Bean
+   /* @Bean
     public CommandLineRunner commandLineRunner(
             AuthenticationService service
     ) {
@@ -56,5 +56,5 @@ public class TelemedecineApplication {
 
         };
 
-    }
+    }*/
 }

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { NgIf } from '@angular/common';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { Authentication } from '../../services/auth/authentication';
 
 @Component({
   selector: 'app-admin-dashboard-page',
@@ -13,7 +14,10 @@ export class AdminDashboardPage {
   usersOpen = false;
   currentPageTitle = 'Dashboard Overview';
 
-  constructor(private router: Router) {
+  constructor(
+    private router: Router,
+    private authService: Authentication
+  ) {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         this.updatePageTitle(event.url);
@@ -37,5 +41,9 @@ export class AdminDashboardPage {
 
   getPageTitle(): string {
     return this.currentPageTitle;
+  }
+
+  onLogout() {
+    this.authService.logout();
   }
 }

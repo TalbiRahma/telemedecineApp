@@ -134,10 +134,10 @@ redirectBasedOnRole() {
       this.router.navigate(['/admin-dashboard/overview']);
       break;
     case 'DOCTOR':
-      this.router.navigate(['/doctor/dashboard']);
+      this.router.navigate(['/doctor-dashboard']);
       break;
     case 'PATIENT':
-      this.router.navigate(['/patient/dashboard']);
+      this.router.navigate(['/patient-dashboard']);
       break;
     default:
       this.router.navigate(['/welcome']);
