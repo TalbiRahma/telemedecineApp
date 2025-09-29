@@ -1,5 +1,6 @@
 package com.telemedecine.api.model.user.doctor;
 
+import com.telemedecine.api.model.slot.Slot;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,6 +9,8 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Builder
@@ -30,4 +33,7 @@ public class DoctorAvailability {
 
     @Enumerated(EnumType.STRING)
     private AvailabilityType type;
+
+    @OneToMany(mappedBy = "availability", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Slot> slots = new ArrayList<>();
 }
