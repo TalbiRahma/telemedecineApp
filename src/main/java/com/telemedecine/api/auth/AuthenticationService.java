@@ -1,16 +1,16 @@
 package com.telemedecine.api.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.telemedecine.api.dao.DoctorRepository;
-import com.telemedecine.api.dao.SpecialtyRepository;
+import com.telemedecine.api.dao.*;
 import com.telemedecine.api.mapper.SpecialtyMapper;
 import com.telemedecine.api.model.Specialty;
 import com.telemedecine.api.model.token.Token;
 import com.telemedecine.api.model.token.TokenType;
+import com.telemedecine.api.model.user.Admin;
+import com.telemedecine.api.model.user.Patient;
+import com.telemedecine.api.model.user.Role;
 import com.telemedecine.api.model.user.doctor.Doctor;
 import com.telemedecine.api.model.user.UserEntity;
-import com.telemedecine.api.dao.TokenRepository;
-import com.telemedecine.api.dao.UserRepository;
 import com.telemedecine.api.model.user.doctor.DoctorState;
 import com.telemedecine.api.security.JwtService;
 import com.telemedecine.api.security.tfa.TwoFactorAuthenticationService;
@@ -44,16 +44,29 @@ public class AuthenticationService {
     private final SpecialtyRepository specialtyRepository;
     private final SpecialtyMapper specialtyMapper;
     private final CloudinaryService cloudinaryService;
+    private final PatientRepository patientRepository;
 
     public AuthenticationResponse register(RegisterRequest request){
-        var user = UserEntity.builder()
-                .firstname(request.getFirstname())
-                .lastname(request.getLastname())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode((request.getPassword())))
-                .role(request.getRole())
-                .mfaEnabled(request.isMfaEnabled())
-                .build();
+        UserEntity user;
+
+        switch (request.getRole()) {
+            case PATIENT:
+                user = new Patient();
+                break;
+            case ADMIN:
+                user = new Admin();
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid role: " + request.getRole());
+        }
+
+        user.setFirstname(request.getFirstname());
+        user.setLastname(request.getLastname());
+        user.setEmail(request.getEmail());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setRole(request.getRole());
+        user.setMfaEnabled(request.isMfaEnabled());
+
 
         // if MFA enabled --> Generate Secret
         if (request.isMfaEnabled()) {

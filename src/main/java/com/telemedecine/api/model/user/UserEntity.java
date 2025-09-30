@@ -23,7 +23,7 @@ import java.util.List;
 @Entity
 @Table(name = "_user")
 @Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn(name = "user_type")
+@DiscriminatorColumn(name = "role", discriminatorType = DiscriminatorType.STRING)
 public class UserEntity implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,6 +51,7 @@ public class UserEntity implements UserDetails {
     private String secret;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "role")
     private Role role;
 
     @OneToMany(mappedBy = "user")

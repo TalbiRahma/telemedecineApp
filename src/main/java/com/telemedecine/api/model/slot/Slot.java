@@ -1,5 +1,6 @@
 package com.telemedecine.api.model.slot;
 
+import com.telemedecine.api.model.appointement.Appointment;
 import com.telemedecine.api.model.user.doctor.DoctorAvailability;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -23,12 +24,20 @@ public class Slot {
     private LocalTime startTime;
     private LocalTime endTime;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "availability_id", nullable = false)
-    private DoctorAvailability availability;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private SlotStatus status = SlotStatus.FREE;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "availability_id", nullable = false)
+    private DoctorAvailability availability;
+
+    @OneToOne(mappedBy = "slot", cascade = CascadeType.ALL)
+    private Appointment appointment;
+
+
+
+
 
 }
