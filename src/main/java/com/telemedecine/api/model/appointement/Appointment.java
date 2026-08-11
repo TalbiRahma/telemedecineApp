@@ -11,7 +11,9 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "appointment")
+@Table(name = "appointment", indexes = {
+        @Index(name = "idx_appointment_slot_start", columnList = "slot_id,scheduled_start")
+})
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,11 +25,17 @@ public class Appointment {
 
     private LocalDateTime bookedAt;
 
+    @Column(name = "scheduled_start")
+    private LocalDateTime scheduledStart;
+
+    @Column(name = "scheduled_end")
+    private LocalDateTime scheduledEnd;
+
     @Enumerated(EnumType.STRING)
     private AppointmentStatus status;
 
-    @OneToOne
-    @JoinColumn(name = "slot_id", nullable = false, unique = true)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "slot_id", nullable = false)
     private Slot slot;
 
     @ManyToOne

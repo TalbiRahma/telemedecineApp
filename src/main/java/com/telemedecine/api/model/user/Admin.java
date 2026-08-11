@@ -22,10 +22,10 @@ public class Admin  extends UserEntity{
     @Column(name = "department")
     private String department;
 
-    @Column(name = "can_manage_users")
+    @Column(name = "can_manage_users", nullable = false)
     private boolean canManageUsers = true;
 
-    @Column(name = "can_manage_system")
+    @Column(name = "can_manage_system", nullable = false)
     private boolean canManageSystem = true;
 
     public enum AdminLevel {

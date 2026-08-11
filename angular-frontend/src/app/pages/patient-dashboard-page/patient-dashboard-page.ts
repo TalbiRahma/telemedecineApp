@@ -1,37 +1,47 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { Router, NavigationEnd, RouterOutlet } from '@angular/router';
+﻿import { CommonModule } from '@angular/common';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
+import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { Authentication } from '../../services/auth/authentication';
+import { PatientService } from '../../services/patient/patient-service';
 
 @Component({
   selector: 'app-patient-dashboard-page',
-  imports: [RouterOutlet],
+  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive],
   templateUrl: './patient-dashboard-page.html',
   styleUrl: './patient-dashboard-page.scss',
-   schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class PatientDashboardPage {
+export class PatientDashboardPage implements OnInit {
+  currentPageTitle = 'Dashboard';
+  patientName = 'Patient';
+  menuOpen = false;
 
-  currentPageTitle = 'My Appointments';
-
-  constructor(private router: Router, private authService: Authentication) {
+  constructor(private router: Router, private authService: Authentication, private patientService: PatientService) {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         this.updatePageTitle(event.url);
+        this.menuOpen = false;
       }
     });
   }
 
-   updatePageTitle(url: string) {
-    if (url.includes('/appointments')) this.currentPageTitle = 'My Appointments';
-    else if (url.includes('/prescriptions')) this.currentPageTitle = 'My Prescriptions';
-    else if (url.includes('/profile')) this.currentPageTitle = 'Profile';
+  ngOnInit(): void {
+    this.patientService.getMe().subscribe({
+      next: patient => this.patientName = `${patient.firstname ?? ''} ${patient.lastname ?? ''}`.trim() || 'Patient',
+      error: () => this.patientName = 'Patient'
+    });
   }
 
-  getPageTitle(): string {
-    return this.currentPageTitle;
+  updatePageTitle(url: string): void {
+    if (url.includes('/appointments')) this.currentPageTitle = 'My appointments';
+    else if (url.includes('/find-doctor')) this.currentPageTitle = 'Find a doctor';
+    else if (url.includes('/profile')) this.currentPageTitle = 'My profile';
+    else if (url.includes('/symptoms-checker')) this.currentPageTitle = 'Symptom checker';
+    else this.currentPageTitle = 'Dashboard';
   }
 
-  onLogout() {
-    this.authService.logout();
-  }
+  getPageTitle(): string { return this.currentPageTitle; }
+  get initials(): string { return this.patientName.split(' ').filter(Boolean).slice(0, 2).map(part => part[0]).join('').toUpperCase() || 'P'; }
+  toggleMenu(): void { this.menuOpen = !this.menuOpen; }
+  onLogout(): void { this.authService.logout(); }
 }

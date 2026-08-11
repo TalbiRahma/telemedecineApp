@@ -1,0 +1,37 @@
+<div class="symptoms-page">
+  <header class="page-header">
+    <div class="title-wrap"><span class="title-icon material-icons-outlined">health_and_safety</span><div><h1 class="page-heading">Symptom checker</h1><p class="page-subtitle">Describe symptoms and receive an AI-based medical analysis.</p></div></div>
+    <span class="info-chip"><span class="material-icons-outlined">info</span>Informational only</span>
+  </header>
+  <div *ngIf="errorMessage" class="med-alert med-alert-error" role="alert"><span class="material-icons-outlined">error_outline</span><span>{{ errorMessage }}</span><button class="alert-action" type="button" (click)="retry()" [disabled]="loading">Try again</button></div>
+  <section class="med-card conversation-card">
+    <div class="conversation-top">
+      <div><strong>Conversation</strong><span class="dot"></span><span>{{ messages.length }} message{{ messages.length === 1 ? '' : 's' }}</span></div>
+      <div class="conversation-actions"><button *ngIf="messages.length" type="button" class="new-conversation" (click)="newConversation()" [disabled]="loading">New conversation</button><span class="secure-note"><span class="material-icons-outlined">lock</span>Private session</span></div>
+    </div>
+    <div class="chat-area" aria-live="polite">
+      <div *ngIf="messages.length === 0" class="empty-chat"><span class="assistant-icon material-icons-outlined">medical_information</span><h2>No messages yet</h2><p>Describe your symptoms below to start.</p><span class="tip"><span class="material-icons-outlined">lightbulb</span>Add duration and severity, for example “2 days, moderate”.</span></div>
+      <ng-container *ngFor="let msg of messages">
+        <div *ngIf="msg.role === 'human'" class="message-row human"><div class="message-content"><span class="sender">You</span><div class="bubble">{{ msg.content }}</div></div><span class="message-avatar material-icons-outlined">person</span></div>
+        <div *ngIf="msg.role === 'ai'" class="message-row ai">
+          <span class="message-avatar material-icons-outlined">health_and_safety</span>
+          <div class="message-content"><span class="sender">MediLink assistant</span><div class="bubble ai-bubble"><p class="summary">{{ msg.response?.chief_summary || msg.content }}</p>
+            <div class="response-sections" *ngIf="msg.response as response">
+              <div *ngIf="response.urgency === 'EMERGENCY'" class="emergency-warning" role="alert"><span class="material-icons-outlined">warning</span><div><strong>Urgent medical attention recommended</strong><p>Prompt medical evaluation may be needed. This assistant is not a substitute for emergency care.</p></div></div>
+              <div class="response-section urgency"><div><strong>Urgency</strong><p *ngIf="response.urgency_reason">{{ response.urgency_reason }}</p></div><span [ngClass]="{'low':response.urgency==='LOW','medium':response.urgency==='MEDIUM','high':response.urgency==='HIGH','emergency':response.urgency==='EMERGENCY'}">{{ response.urgency }}</span></div>
+              <div class="response-section" *ngIf="response.differential?.length"><strong>Possible conditions</strong><div class="condition" *ngFor="let differential of response.differential"><div><b>{{ differential.condition }}</b><span>{{ differential.likelihood }}</span></div><p>{{ differential.rationale }}</p></div></div>
+              <div class="response-section" *ngIf="response.next_steps?.length"><strong>Recommended next steps</strong><ul><li *ngFor="let step of response.next_steps">{{ step.text }} <small>{{ step.category }}</small></li></ul></div>
+              <div class="response-section red-flags" *ngIf="response.red_flags?.length"><strong>Warning signs</strong><div *ngFor="let flag of response.red_flags"><b>{{ flag.symptom }}</b><p>{{ flag.action }}</p></div></div>
+              <div class="response-section doctor-recommendation" *ngIf="response.doctor as doctor"><div><strong>Recommended specialist</strong><b>{{ displaySpecialty(doctor.specialty) }}</b><p>Recommended timing: {{ doctor.when }}</p></div><button class="med-btn med-btn-primary specialist-cta" type="button" (click)="findSpecialist(doctor.specialty)">Find a {{ displaySpecialty(doctor.specialty) | lowercase }} specialist</button></div>
+              <div class="response-section follow-up" *ngIf="response.follow_up_questions?.length"><strong>A few follow-up questions</strong><ul><li *ngFor="let question of response.follow_up_questions">{{ question }}</li></ul></div>
+              <div class="response-disclaimer"><span class="material-icons-outlined">info</span>{{ response.disclaimer || 'AI-generated information — not medical advice.' }}</div>
+            </div>
+          </div></div>
+        </div>
+      </ng-container>
+      <div *ngIf="loading" class="message-row ai"><span class="message-avatar material-icons-outlined">health_and_safety</span><div class="message-content"><span class="sender">MediLink assistant</span><div class="bubble ai-bubble typing"><i></i><i></i><i></i><span>Analyzing your symptoms...</span></div></div></div>
+    </div>
+    <div class="composer"><label class="med-label" for="symptom-input">Ask a medical question</label><div class="composer-row"><textarea id="symptom-input" class="med-input" [(ngModel)]="input" rows="3" maxlength="2000" placeholder="Describe your symptoms… (duration, severity, age, medications if relevant)" (keydown)="onKeydown($event)" [disabled]="loading"></textarea><button class="med-btn med-btn-primary" type="button" (click)="send()" [disabled]="loading || !input.trim()"><span class="material-icons-outlined">send</span>{{ loading ? 'Analyzing…' : 'Run analysis' }}</button></div><div class="composer-help"><span>Example: <i>fever, sore throat, fatigue</i></span><span>{{ input.length }}/2000 · Enter to send · Shift + Enter for a new line</span></div></div>
+  </section>
+  <div class="medical-note"><span class="material-icons-outlined">info</span><p><strong>Informational only — this is not a medical diagnosis.</strong><br>If symptoms are severe or worsening, seek urgent care.</p></div>
+</div>

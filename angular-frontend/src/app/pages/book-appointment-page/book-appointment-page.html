@@ -1,0 +1,101 @@
+<div class="booking-page">
+  <header class="page-header">
+    <div>
+      <a class="back-link" routerLink="/patient-dashboard/find-doctor"><span class="material-icons-outlined">arrow_back</span>Back to doctors</a>
+      <h1 class="page-heading">Book an appointment</h1>
+      <p class="page-subtitle">Choose an available time with your selected doctor.</p>
+    </div>
+  </header>
+
+  <section *ngIf="doctorState === 'error'" class="med-card fatal-state">
+    <span class="material-icons-outlined">person_off</span>
+    <h2>Doctor not found</h2>
+    <p>{{ errorMessage }}</p>
+    <a class="med-btn med-btn-primary" routerLink="/patient-dashboard/find-doctor">Return to Find a doctor</a>
+  </section>
+
+  <ng-container *ngIf="doctorState !== 'error'">
+    <section class="med-card doctor-card" aria-label="Selected doctor">
+      <ng-container *ngIf="doctorState === 'loading'; else doctorReady">
+        <div class="skeleton doctor-avatar-skeleton"></div><div class="doctor-copy skeleton-copy"><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span></div>
+      </ng-container>
+      <ng-template #doctorReady>
+        <div class="doctor-avatar">{{ doctorInitials }}</div>
+        <div class="doctor-copy">
+          <span class="section-kicker">Doctor selected</span>
+          <h2>{{ doctorName }}</h2>
+          <span *ngIf="doctor?.specialty?.name" class="specialty-badge">{{ doctor?.specialty?.name }}</span>
+          <div class="doctor-meta">
+            <span *ngIf="doctor?.adresse"><span class="material-icons-outlined">location_on</span>{{ doctor?.adresse }}</span>
+            <span *ngIf="doctor?.phone"><span class="material-icons-outlined">phone</span>{{ doctor?.phone }}</span>
+          </div>
+        </div>
+        <a class="change-link" routerLink="/patient-dashboard/find-doctor">Change doctor</a>
+      </ng-template>
+    </section>
+
+    <div class="booking-layout">
+      <main class="selection-column">
+        <section class="med-card selection-card">
+          <div class="section-heading"><span class="step-number">1</span><div><h2>Choose a date</h2><p>Select an available day for your consultation.</p></div></div>
+          <div class="period-nav">
+            <button type="button" (click)="previousPeriod()" [disabled]="!canGoPrevious"><span class="material-icons-outlined">chevron_left</span>Previous</button>
+            <strong>{{ periodLabel() }}</strong>
+            <button type="button" (click)="nextPeriod()">Next<span class="material-icons-outlined">chevron_right</span></button>
+          </div>
+
+          <div *ngIf="availabilityState === 'loading'" class="date-strip" aria-label="Loading appointment dates">
+            <div class="date-chip skeleton" *ngFor="let item of [1,2,3,4,5]"></div>
+          </div>
+
+          <div *ngIf="availabilityState === 'error'" class="med-alert med-alert-error">
+            <span class="material-icons-outlined">error_outline</span><div><strong>Unable to load appointment times</strong><p>{{ errorMessage }}</p><button class="med-btn med-btn-secondary" type="button" (click)="loadAvailability()">Try again</button></div>
+          </div>
+
+          <div *ngIf="availabilityState === 'empty'" class="empty-availability">
+            <span class="material-icons-outlined">event_busy</span><div><h3>No availability in this period</h3><p>{{ doctorName }} has no open appointment times for these dates.</p></div>
+            <div class="empty-actions"><button class="med-btn med-btn-primary" type="button" (click)="nextPeriod()">Next 2 weeks <span class="material-icons-outlined">arrow_forward</span></button><a class="med-btn med-btn-secondary" routerLink="/patient-dashboard/find-doctor">Choose another doctor</a></div>
+          </div>
+
+          <div *ngIf="availabilityState === 'loaded'" class="date-strip">
+            <button class="date-chip" type="button" *ngFor="let day of dayOptions; trackBy: trackDay" (click)="selectDay(day)" [class.selected]="selectedDay?.dateIso === day.dateIso" [attr.aria-pressed]="selectedDay?.dateIso === day.dateIso">
+              <small *ngIf="isToday(day.dateIso)">Today</small><span>{{ dayName(day.dateIso) }}</span><strong>{{ dayNumber(day.dateIso) }}</strong><em>{{ day.slots.length }} time{{ day.slots.length === 1 ? '' : 's' }}</em>
+            </button>
+          </div>
+        </section>
+
+        <section class="med-card selection-card time-section" [class.inactive]="!selectedDay">
+          <div class="section-heading"><span class="step-number">2</span><div><h2>Choose a time</h2><p>{{ selectedDay ? 'Available times for ' + longDate(selectedDay.dateIso) + '.' : 'Choose an available date first.' }}</p></div></div>
+          <ng-container *ngIf="selectedDay">
+            <div *ngIf="morningSlots.length" class="time-group"><h3>Morning</h3><div class="time-grid"><button type="button" *ngFor="let slot of morningSlots; trackBy: trackSlot" (click)="selectSlot(slot)" [class.selected]="selectedSlot?.id === slot.id && selectedSlot?.startDateTime === slot.startDateTime">{{ timeLabel(slot) }}</button></div></div>
+            <div *ngIf="afternoonSlots.length" class="time-group"><h3>Afternoon</h3><div class="time-grid"><button type="button" *ngFor="let slot of afternoonSlots; trackBy: trackSlot" (click)="selectSlot(slot)" [class.selected]="selectedSlot?.id === slot.id && selectedSlot?.startDateTime === slot.startDateTime">{{ timeLabel(slot) }}</button></div></div>
+          </ng-container>
+        </section>
+      </main>
+
+      <aside class="summary-column">
+        <section *ngIf="!bookedAppointment; else successState" class="med-card summary-card">
+          <div class="section-heading compact"><span class="step-number">3</span><div><h2>Appointment summary</h2><p>Review before confirming.</p></div></div>
+          <p *ngIf="!selectedSlot" class="summary-placeholder"><span class="material-icons-outlined">touch_app</span>Choose a date and time to continue.</p>
+          <dl *ngIf="selectedSlot" class="summary-list">
+            <div><dt>Doctor</dt><dd>{{ doctorName }}</dd></div>
+            <div *ngIf="doctor?.specialty?.name"><dt>Specialty</dt><dd>{{ doctor?.specialty?.name }}</dd></div>
+            <div><dt>Date</dt><dd>{{ longDate(selectedDay?.dateIso) }}</dd></div>
+            <div><dt>Time</dt><dd>{{ timeLabel(selectedSlot) }}</dd></div>
+            <div *ngIf="selectedDuration"><dt>Duration</dt><dd>{{ selectedDuration }} min</dd></div>
+            <div *ngIf="doctor?.adresse"><dt>Location</dt><dd>{{ doctor?.adresse }}</dd></div>
+          </dl>
+          <div *ngIf="bookingError" class="med-alert med-alert-error"><span class="material-icons-outlined">error_outline</span>{{ bookingError }}</div>
+          <button class="med-btn med-btn-primary confirm-button" type="button" (click)="confirmAppointment()" [disabled]="!selectedSlot || booking">
+            <span *ngIf="!booking" class="material-icons-outlined">event_available</span><span *ngIf="booking" class="button-spinner"></span>{{ booking ? 'Booking…' : 'Confirm appointment' }}
+          </button>
+          <p class="secure-note"><span class="material-icons-outlined">lock</span>Your slot is verified again when you confirm.</p>
+        </section>
+
+        <ng-template #successState>
+          <section class="med-card success-card"><span class="success-icon material-icons-outlined">check_circle</span><h2>Appointment booked successfully</h2><p>Your appointment with {{ doctorName }} is scheduled for {{ bookedDate() }} at {{ bookedTime() }}.</p><a class="med-btn med-btn-primary" routerLink="/patient-dashboard/appointments">View my appointments</a><a class="med-btn med-btn-secondary" routerLink="/patient-dashboard/dashboard">Back to dashboard</a></section>
+        </ng-template>
+      </aside>
+    </div>
+  </ng-container>
+</div>

@@ -1,0 +1,23 @@
+{
+  "session_id": "0671df08-537f-485f-a0aa-66cd43c59701",
+  "updated_at": "2026-01-29T10:19:00.668002+00:00",
+  "summary": "**Updated Summary:**\n\nChief Complaint: Chest discomfort during physical activity, shortness of breath, irregular heartbeat, dizziness, and lightheadedness; constant fatigue, weight gain, cold intolerance, dry skin, hair loss, mood changes, and difficulty concentrating\n\nDifferential Diagnoses:\n- Heart Failure (HIGH) - chest discomfort, shortness of breath, and irregular heartbeat\n- Coronary Artery Disease (MEDIUM) - chest discomfort during physical activity\n- Pulmonary Hypertension (MEDIUM) - shortness of breath and irregular heartbeat\n- Atrial Fibrillation (LOW) - irregular heartbeat\n- Chronic Obstructive Pulmonary Disease (COPD) (LOW) - shortness of breath\n- Hypothyroidism (HIGH) - fatigue, weight gain, cold intolerance, dry skin, and hair loss\n- Anemia (MEDIUM) - fatigue and hair loss\n- Depression (MEDIUM) - mood changes and difficulty concentrating\n- Chronic Fatigue Syndrome (LOW) - fatigue and difficulty concentrating\n- Adrenal Insufficiency (LOW) - fatigue, weight gain, and mood changes\n\nUrgency: HIGH for chest symptoms, MEDIUM for fatigue and other symptoms\n\nNext Steps:\n- Electrocardiogram (ECG) to evaluate heart rhythm and function\n- Echocardiogram to evaluate heart structur",
+  "recent_messages": [
+    {
+      "role": "assistant",
+      "content": "urgency=MEDIUM; top_diagnosis=Hypothyroidism"
+    },
+    {
+      "role": "assistant",
+      "content": "urgency=MEDIUM; top_diagnosis=Heart Failure"
+    },
+    {
+      "role": "assistant",
+      "content": "urgency=HIGH; top_diagnosis=Heart Failure"
+    },
+    {
+      "role": "assistant",
+      "content": "urgency=MEDIUM; top_diagnosis=Hypothyroidism"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+<div class="login-page">
+  <section class="brand-panel">
+    <div class="brand-content"><a class="brand" routerLink="/"><span class="brand-mark"><span class="material-icons-outlined">favorite</span></span><span>Medi<em>Link</em></span></a><div class="brand-message"><span class="eyebrow">Account security</span><h1>Protect your<br>health information.</h1><p>An authenticator app adds a second layer of protection to your MediLink account.</p></div></div>
+  </section>
+  <main class="login-panel">
+    <div class="login-wrap verification-block">
+      <span class="verification-icon material-icons-outlined">security</span>
+      <div class="login-heading"><h2>Set up two-factor authentication</h2><p>Scan this QR code with Google Authenticator or Microsoft Authenticator.</p></div>
+      <div *ngIf="errorMessage" class="med-alert med-alert-error" role="alert"><span class="material-icons-outlined">error_outline</span>{{ errorMessage }}</div>
+      <div *ngIf="qrCodeImageUri" class="qr-code"><img [src]="qrCodeImageUri" alt="Authenticator enrollment QR code"></div>
+      <p *ngIf="isLoading && !qrCodeImageUri" class="setup-status">Preparing your secure QR code…</p>
+      <form class="login-form" (ngSubmit)="verifyCode()">
+        <p>Enter the 6-digit code shown in your authenticator app.</p>
+        <div><label class="med-label" for="enrollmentCode">Verification code</label><input class="med-input otp-input" id="enrollmentCode" name="enrollmentCode" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" required [(ngModel)]="otpCode" (input)="normalizeCode()" placeholder="000000"></div>
+        <button class="med-btn med-btn-primary" type="submit" [disabled]="isLoading || !qrCodeImageUri || otpCode.length !== 6">{{ isLoading ? 'Verifying…' : 'Verify and enable 2FA' }}</button>
+        <button class="med-btn med-btn-secondary" type="button" (click)="cancel()">Back to sign in</button>
+      </form>
+    </div>
+  </main>
+</div>

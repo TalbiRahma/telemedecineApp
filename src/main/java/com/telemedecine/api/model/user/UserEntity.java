@@ -1,5 +1,6 @@
 package com.telemedecine.api.model.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.telemedecine.api.model.Specialty;
 import com.telemedecine.api.model.token.Token;
 import jakarta.persistence.*;
@@ -15,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.time.Instant;
 
 @Data
 @Builder
@@ -45,22 +47,59 @@ public class UserEntity implements UserDetails {
 
     @NotBlank(message = "Password is required")
     @Size(min = 8, max = 255, message = "Password must be at least 8 characters")
+    @JsonIgnore
     private String password;
 
+    @Size(max = 30, message = "Phone must not exceed 30 characters")
+    private String phone;
+
+    /** True only after the first TOTP from {@link #secret} has been verified. */
     private boolean mfaEnabled;
+    /** True while {@link #secret} is an unverified enrollment secret. */
+    @Column(nullable = true)
+    private Boolean mfaEnrollmentPending;
+    @JsonIgnore
     private String secret;
 
+    private Instant credentialsUpdatedAt;
+
+    private Integer authenticationVersion;
+
     @Enumerated(EnumType.STRING)
-    @Column(name = "role")
+    @Column(name = "role", insertable = false, updatable = false)
     private Role role;
 
     @OneToMany(mappedBy = "user")
+    @JsonIgnore
     private List<Token>  tokens;
 
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return role.getAuthorities();
+    }
+
+    public boolean isMfaEnrollmentPending() {
+        return Boolean.TRUE.equals(mfaEnrollmentPending);
+    }
+
+    public void setMfaEnrollmentPending(boolean mfaEnrollmentPending) {
+        this.mfaEnrollmentPending = mfaEnrollmentPending;
+    }
+
+    @JsonIgnore
+    public MfaState getMfaState() {
+        boolean hasSecret = secret != null && !secret.isBlank();
+        if (mfaEnabled && Boolean.FALSE.equals(mfaEnrollmentPending) && hasSecret) {
+            return MfaState.ENABLED;
+        }
+        if (!mfaEnabled && Boolean.TRUE.equals(mfaEnrollmentPending) && hasSecret) {
+            return MfaState.ENROLLMENT_PENDING;
+        }
+        if (!mfaEnabled && !Boolean.TRUE.equals(mfaEnrollmentPending) && !hasSecret) {
+            return MfaState.DISABLED;
+        }
+        return MfaState.INCONSISTENT;
     }
 
 

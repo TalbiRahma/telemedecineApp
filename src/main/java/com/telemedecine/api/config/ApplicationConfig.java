@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -28,6 +29,7 @@ import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpMethod.PUT;
+import static org.springframework.http.HttpMethod.OPTIONS;
 import static org.springframework.web.bind.annotation.RequestMethod.PATCH;
 
 
@@ -36,6 +38,9 @@ import static org.springframework.web.bind.annotation.RequestMethod.PATCH;
 public class ApplicationConfig {
 
     private final UserRepository userRepository;
+
+    @Value("${app.frontend-url:http://localhost:4200}")
+    private String frontendUrl;
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> userRepository.findByEmail(username)
@@ -65,7 +70,7 @@ public class ApplicationConfig {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         final CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
+        config.setAllowedOrigins(Collections.singletonList(frontendUrl.replaceAll("/+$", "")));
         config.setAllowedHeaders(Arrays.asList(
                 ORIGIN,
                 CONTENT_TYPE,
@@ -77,7 +82,8 @@ public class ApplicationConfig {
                 POST.name(),
                 DELETE.name(),
                 PUT.name(),
-                PATCH.name()
+                PATCH.name(),
+                OPTIONS.name()
         ));
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);

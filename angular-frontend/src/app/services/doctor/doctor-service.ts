@@ -7,19 +7,31 @@ import { Doctor } from '../../models/doctor';
   providedIn: 'root'
 })
 export class DoctorService {
-  private baseUrl = 'http://localhost:8080/api/v1/doctor';
+  private baseUrl = '/api/v1/doctor';
    constructor(private http: HttpClient) {}
 
-  getAllDoctors(): Observable<Doctor[]> {
+    getAllDoctors(): Observable<Doctor[]> {
     return this.http.get<Doctor[]>(`${this.baseUrl}/all`);
   }
 
-    getDoctorById(id: number): Observable<Doctor> {
-    return this.http.get<Doctor>(`${this.baseUrl}/${id}`);
+  getBookableDoctors(): Observable<Doctor[]> {
+    return this.http.get<Doctor[]>(`${this.baseUrl}/bookable`);
+  }
+
+  getDoctorById(id: number): Observable<Doctor> {
+    return this.http.get<Doctor>(`${this.baseUrl}/get/${id}`); // ✅ fix
+  }
+
+  getBookableDoctorById(id: number): Observable<Doctor> {
+    return this.http.get<Doctor>(`${this.baseUrl}/bookable/${id}`);
   }
 
   updateDoctor(id: number, doctor: Partial<Doctor>): Observable<Doctor> {
     return this.http.put<Doctor>(`${this.baseUrl}/edit/${id}`, doctor);
+  }
+
+    getDoctorOverview(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/overview`);
   }
 
 }

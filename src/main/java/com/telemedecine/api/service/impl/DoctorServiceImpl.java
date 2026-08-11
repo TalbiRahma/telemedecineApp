@@ -5,6 +5,7 @@ import com.telemedecine.api.dao.UserRepository;
 import com.telemedecine.api.dto.DoctorDto;
 import com.telemedecine.api.mapper.DoctorMapper;
 import com.telemedecine.api.model.user.doctor.Doctor;
+import com.telemedecine.api.model.user.doctor.DoctorState;
 import com.telemedecine.api.service.DoctorService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +24,7 @@ public class DoctorServiceImpl implements DoctorService {
     private final DoctorRepository doctorRepository;
     private final DoctorMapper doctorMapper;
 
-    public DoctorDto updateDoctor(Long id, DoctorDto doctorDto) {
+    public DoctorDto updateDoctor(Long id, DoctorDto doctorDto, boolean allowStateChange) {
         Doctor doctor = doctorRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Doctor not found with id: " + id));
         if (doctorDto.getFirstname() != null) {
             doctor.setFirstname(doctorDto.getFirstname());
@@ -34,6 +35,9 @@ public class DoctorServiceImpl implements DoctorService {
         if (doctorDto.getEmail() != null) {
             doctor.setEmail(doctorDto.getEmail());
         }
+        if (doctorDto.getPhone() != null) {
+            doctor.setPhone(doctorDto.getPhone());
+        }
         if (doctorDto.getLicenseNumber() != null) {
             doctor.setLicenseNumber(doctorDto.getLicenseNumber());
         }
@@ -43,7 +47,7 @@ public class DoctorServiceImpl implements DoctorService {
         if (doctorDto.getCertificationUrl() != null) {
             doctor.setCertificationUrl(doctorDto.getCertificationUrl());
         }
-        if (doctorDto.getState() != null) {
+        if (allowStateChange && doctorDto.getState() != null) {
             doctor.setState(doctorDto.getState());
         }
         if (doctorDto.getSpecialty() != null) {
@@ -70,5 +74,18 @@ public class DoctorServiceImpl implements DoctorService {
     @Transactional(readOnly = true)
     public List<DoctorDto> getAll() {
         return doctorMapper.toDtoList(doctorRepository.findAll());
+    }
+
+    @Transactional(readOnly = true)
+    public List<DoctorDto> getBookableDoctors() {
+        return doctorMapper.toDtoList(doctorRepository.findByState(DoctorState.CONFIRMED));
+    }
+
+    @Transactional(readOnly = true)
+    public DoctorDto getBookableDoctor(Long id) {
+        Doctor doctor = doctorRepository.findById(id)
+                .filter(candidate -> candidate.getState() == DoctorState.CONFIRMED)
+                .orElseThrow(() -> new EntityNotFoundException("Bookable doctor not found with id: " + id));
+        return doctorMapper.toDto(doctor);
     }
 }

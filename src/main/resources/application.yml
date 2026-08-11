@@ -1,29 +1,72 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/telemedecineapi
-    username: postgres
-    password: system
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/telemedecineapi}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
+    show-sql: ${JPA_SHOW_SQL:false}
     properties:
       hibernate:
         format_sql: true
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+  mail:
+    host: ${SMTP_HOST:smtp.gmail.com}
+    port: ${SMTP_PORT:587}
+    username: ${SMTP_USERNAME:}
+    password: ${SMTP_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+
+app:
+  frontend-url: ${FRONTEND_URL:http://localhost:4200}
+  bootstrap-admin:
+    enabled: ${ADMIN_BOOTSTRAP_ENABLED:false}
+    email: ${ADMIN_BOOTSTRAP_EMAIL:}
+    password: ${ADMIN_BOOTSTRAP_PASSWORD:}
+
+ai:
+  service:
+    base-url: ${AI_SERVICE_URL:http://127.0.0.1:8000}
+    connect-timeout: ${AI_CONNECT_TIMEOUT:5s}
+    read-timeout: ${AI_READ_TIMEOUT:30s}
+
+password-reset:
+  token-expiration-minutes: ${PASSWORD_RESET_EXPIRATION_MINUTES:20}
+  request-cooldown-seconds: ${PASSWORD_RESET_REQUEST_COOLDOWN_SECONDS:60}
 
 application:
   security:
+    mfa:
+      challenge-expiration-minutes: ${MFA_CHALLENGE_EXPIRATION_MINUTES:5}
+      max-attempts: ${MFA_MAX_ATTEMPTS:5}
     jwt:
-      secret-key: f8U5x7V9w2q5z8YbW3k9v6JdN1r2t4p8o1q2r3s4t5u6v7w8x9y0z1a2b3c4d5
-      expiration: 86400000 # a day
+      secret-key: ${JWT_SECRET}
+      expiration: ${JWT_EXPIRATION_MS:86400000}
       refresh-token:
-        expiration: 604800000 # 7 days
-
+        expiration: ${JWT_REFRESH_EXPIRATION_MS:604800000}
 
 logging:
   level:
-    com.telemedecine.api.mapper: DEBUG
-    org.mapstruct: DEBUG
+    com.telemedecine.api.mapper: ${MAPPER_LOG_LEVEL:INFO}
+    org.mapstruct: ${MAPSTRUCT_LOG_LEVEL:INFO}
+
+cloudinary:
+  cloud-name: ${CLOUDINARY_CLOUD_NAME:}
+  api-key: ${CLOUDINARY_API_KEY:}
+  api-secret: ${CLOUDINARY_API_SECRET:}
+
+zoom:
+  api:
+    base-url: ${ZOOM_BASE_URL:https://api.zoom.us/v2}
+    account-id: ${ZOOM_ACCOUNT_ID:}
+    client-id: ${ZOOM_CLIENT_ID:}
+    client-secret: ${ZOOM_CLIENT_SECRET:}

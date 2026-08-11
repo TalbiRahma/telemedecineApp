@@ -1,184 +1,127 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthenticationRequest } from '../../models/auth/authentication-request';
-import { AuthenticationResponse } from '../../models/auth/authentication-response';
-import { Authentication } from '../../services/auth/authentication';
-import { ActivatedRoute, Router } from '@angular/router';
-import { VerificationRequest } from '../../models/auth/verification-request';
+import { NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
+import { Authentication } from '../../services/auth/authentication';
 
 @Component({
   selector: 'app-two-fa-page',
-  imports: [FormsModule],
+  imports: [FormsModule, NgIf, RouterLink],
   templateUrl: './two-fa-page.html',
   styleUrl: './two-fa-page.scss'
 })
-export class TwoFaPage  implements OnInit{
-
-  authRequest: AuthenticationRequest = {};
-  otpCode: any ;
-  email: string = '';
-  secretImageUri: any; 
-  authResponse: AuthenticationResponse = {
-     accessToken: '',
-    refreshToken: ''
-  };
-    isLoading: boolean = false;
+export class TwoFaPage implements OnInit {
+  otpCode = '';
+  isLoading = false;
+  isRecovering = false;
+  errorMessage = '';
+  challengeToken = '';
 
   constructor(
     private authService: Authentication,
-    private router: Router,
-     private route: ActivatedRoute
-  ) {
+    private router: Router
+  ) {}
 
-  }
-
-   ngOnInit() {
-    // Get data from query parameters instead of navigation state
-    this.route.queryParams.subscribe(params => {
-      this.email = params['email'] || '';
-      this.secretImageUri = params['secretImageUri'] || '';
-      
-      console.log('Email from params:', this.email);
-      console.log('Secret URI from params:', this.secretImageUri);
-      
-      if (!this.email) {
-        console.error('No email provided for 2FA');
-        // Redirect back to registration if no email
-        this.router.navigate(['register']);
-      }
-    });
-  }
-
-    /*verifyCode(){
-      const verifyRequest: VerificationRequest ={
-        email: this.email,
-        code: this.otpCode
-      };
-      this.authService.verifyCode(verifyRequest)
-      .subscribe({
-        next: (response) => {
-          console.log('2FA verified successfully', response);
-          //localStorage.setItem('token', response.accessToken as string);
-          this.router.navigate(['welcome'])
-        },
-        error: (err) => {
-          console.error(err);
-           console.log('email', this.authRequest.email);
-          alert('Invalid code, please try again.');
-        }
-      })
-    }*/
-
-     /* verifyCode() {
-    if (!this.email) {
-      console.error('Email is not available for verification');
-      alert('Email information is missing. Please try registering again.');
-      this.router.navigate(['register']);
+  ngOnInit(): void {
+    const pending = this.authService.getMfaChallenge();
+    if (!pending) {
+      this.router.navigate(['/']);
       return;
     }
-    
-    if (!this.otpCode || this.otpCode.length < 6) {
-      alert('Please enter a valid 6-digit code');
+    this.challengeToken = pending.challengeToken;
+    if (pending.enrollment) {
+      this.router.navigate(['/mfa-setup']);
+    }
+  }
+
+  normalizeCode(): void {
+    this.otpCode = this.otpCode.replace(/\D/g, '').slice(0, 6);
+  }
+
+  verifyCode(): void {
+    this.normalizeCode();
+    if (this.isLoading || !/^\d{6}$/.test(this.otpCode)) {
+      this.errorMessage = 'Enter a valid 6-digit verification code.';
       return;
     }
-    
+
     this.isLoading = true;
-    
-    const verifyRequest: VerificationRequest = {
-      email: this.email,
+    this.errorMessage = '';
+    this.authService.verifyCode({
+      challengeToken: this.challengeToken,
       code: this.otpCode
-    };
-    
-    this.authService.verifyCode(verifyRequest)
-      .subscribe({
-        next: (response) => {
-          console.log('2FA verified successfully', response);
-          this.isLoading = false;
-          
-          if (response.accessToken) {
-            localStorage.setItem('token', response.accessToken);
-            this.router.navigate(['welcome']);
-          } else {
-            alert('Verification successful but no access token received');
-          }
-        },
-        error: (err) => {
-          console.error('Verification error:', err);
-          this.isLoading = false;
-          alert('Invalid code, please try again.');
-        }
-      });
-  }*/
-
-verifyCode() {
-  if (!this.email) {
-    console.error('Email is not available for verification');
-    alert('Email information is missing. Please try registering again.');
-    this.router.navigate(['register']);
-    return;
-  }
-  
-  if (!this.otpCode || this.otpCode.length < 6) {
-    alert('Please enter a valid 6-digit code');
-    return;
-  }
-  
-  this.isLoading = true;
-  
-  const verifyRequest: VerificationRequest = {
-    email: this.email,
-    code: this.otpCode
-  };
-  
-  this.authService.verifyCode(verifyRequest)
-    .subscribe({
+    }).subscribe({
       next: (response) => {
-        console.log('2FA verified successfully', response);
         this.isLoading = false;
-        
-         if (response.accessToken) {
-          localStorage.setItem('authToken', response.accessToken);
+        if (!this.authService.storeSession(response)) {
+          this.errorMessage = 'Verification succeeded but no valid session was returned.';
+          return;
         }
-        
-        if (response.refreshToken) {
-          localStorage.setItem('refreshToken', response.refreshToken);
-        }
-
-        if (response.accessToken) {
-          this.redirectBasedOnRole();
-        } else {
-          // Handle case where token is missing but verification succeeded
-          console.warn('Verification successful but no access token received');
-          // You might want to proceed to login or request a token
-          this.router.navigate([''], { 
-            queryParams: { message: 'Verification successful. Please login.' } 
-          });
-        }
+        this.redirectBasedOnRole();
       },
-      error: (err) => {
-        console.error('Verification error:', err);
+      error: (error) => {
         this.isLoading = false;
-        alert('Invalid code, please try again.');
+        this.otpCode = '';
+        const errorCode = error?.error?.error;
+        if (errorCode === 'MFA_CHALLENGE_EXPIRED') {
+          this.authService.clearMfaChallenge();
+          this.errorMessage = 'Your verification session has expired. Please sign in again.';
+        } else if (errorCode === 'MFA_TOO_MANY_ATTEMPTS') {
+          this.authService.clearMfaChallenge();
+          this.errorMessage = 'Too many verification attempts. Please sign in again.';
+        } else {
+          this.errorMessage = 'Invalid or expired verification code.';
+        }
       }
     });
-}
-
-redirectBasedOnRole() {
-  const role = this.authService.getUserRole();
-  
-  switch (role) {
-    case 'ADMIN':
-      this.router.navigate(['/admin-dashboard/overview']);
-      break;
-    case 'DOCTOR':
-      this.router.navigate(['/doctor-dashboard']);
-      break;
-    case 'PATIENT':
-      this.router.navigate(['/patient-dashboard']);
-      break;
-    default:
-      this.router.navigate(['/welcome']);
-      break;
   }
-}
+
+  backToSignIn(): void {
+    this.authService.clearMfaChallenge();
+    this.router.navigate(['/']);
+  }
+
+  setUpAuthenticatorAgain(): void {
+    if (this.isLoading || this.isRecovering || !this.challengeToken) return;
+    this.isRecovering = true;
+    this.errorMessage = '';
+    this.authService.resumeEnrollment(this.challengeToken).subscribe({
+      next: (response) => {
+        this.isRecovering = false;
+        if (!response.qrCodeImageUri || !this.authService.beginMfa(response)) {
+          this.errorMessage = 'Unable to start authenticator setup. Please sign in again.';
+          return;
+        }
+        this.router.navigate(['/mfa-setup'], {
+          state: { qrCodeImageUri: response.qrCodeImageUri }
+        });
+      },
+      error: (error) => {
+        this.isRecovering = false;
+        const errorCode = error?.error?.error;
+        if (errorCode === 'MFA_CHALLENGE_EXPIRED' || errorCode === 'MFA_TOO_MANY_ATTEMPTS') {
+          this.authService.clearMfaChallenge();
+          this.errorMessage = 'Your verification session has expired. Please sign in again.';
+        } else {
+          this.errorMessage = 'Authenticator setup could not be started. Please sign in again.';
+        }
+      }
+    });
+  }
+
+  private redirectBasedOnRole(): void {
+    switch (this.authService.getUserRole()) {
+      case 'ADMIN':
+        this.router.navigate(['/admin-dashboard/overview']);
+        break;
+      case 'DOCTOR':
+        this.router.navigate(['/doctor-dashboard/overview']);
+        break;
+      case 'PATIENT':
+        this.router.navigate(['/patient-dashboard']);
+        break;
+      default:
+        this.router.navigate(['/welcome']);
+    }
+  }
 }

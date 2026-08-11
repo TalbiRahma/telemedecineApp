@@ -1,17 +1,19 @@
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <!-- Card Example -->
-      <div class="bg-white p-6 rounded-xl shadow">
-        <h2 class="text-lg font-semibold text-gray-700">Users</h2>
-        <p class="text-3xl font-bold text-indigo-600 mt-2">120</p>
-      </div>
-
-      <div class="bg-white p-6 rounded-xl shadow">
-        <h2 class="text-lg font-semibold text-gray-700">Doctors</h2>
-        <p class="text-3xl font-bold text-indigo-600 mt-2">45</p>
-      </div>
-
-      <div class="bg-white p-6 rounded-xl shadow">
-        <h2 class="text-lg font-semibold text-gray-700">Reports</h2>
-        <p class="text-3xl font-bold text-indigo-600 mt-2">32</p>
-      </div>
-    </div>
+<div class="admin-page">
+  <section class="admin-hero"><span class="admin-hero-icon"><span class="material-icons-outlined">admin_panel_settings</span></span><div><h1>Administration overview</h1><p>Monitor users, doctor approvals and platform activity.</p></div></section>
+  <div *ngIf="errorMsg" class="med-alert med-alert-error admin-alert-row"><span class="material-icons-outlined">error_outline</span><div><strong>Unable to load dashboard statistics</strong><span>We couldn't retrieve the latest administrative metrics.</span></div><button class="med-btn med-btn-secondary" type="button" (click)="refreshNow()">Retry</button></div>
+  <section class="admin-kpis" aria-label="Platform metrics">
+    <ng-container *ngIf="loading && !stats">
+      <div class="admin-kpi med-card" *ngFor="let item of [1,2,3,4]"><span class="skeleton" style="width:75px;height:12px"></span><span class="admin-kpi-icon skeleton"></span><span class="skeleton" style="width:54px;height:30px"></span><span class="admin-kpi-sub skeleton" style="height:11px"></span></div>
+    </ng-container>
+    <ng-container *ngIf="stats as data">
+      <article class="admin-kpi med-card"><span class="admin-kpi-label">Total users</span><span class="admin-kpi-icon"><span class="material-icons-outlined">groups</span></span><strong>{{ data.totalUsers }}</strong><span class="admin-kpi-sub">Patients and doctors</span></article>
+      <article class="admin-kpi med-card"><span class="admin-kpi-label">Doctors</span><span class="admin-kpi-icon"><span class="material-icons-outlined">medical_services</span></span><strong>{{ data.totalDoctors }}</strong><div class="status-stack"><span class="admin-badge pending">Pending {{ data.pendingDoctors }}</span><span class="admin-badge confirmed">Confirmed {{ data.confirmedDoctors }}</span><span class="admin-badge rejected">Rejected {{ data.rejectedDoctors }}</span></div></article>
+      <article class="admin-kpi med-card"><span class="admin-kpi-label">Patients</span><span class="admin-kpi-icon"><span class="material-icons-outlined">personal_injury</span></span><strong>{{ data.totalPatients }}</strong><span class="admin-kpi-sub">Registered accounts</span></article>
+      <article class="admin-kpi med-card"><span class="admin-kpi-label">Appointments</span><span class="admin-kpi-icon"><span class="material-icons-outlined">event_available</span></span><strong>{{ data.totalAppointments }}</strong><span class="admin-kpi-sub">Total bookings</span></article>
+    </ng-container>
+  </section>
+  <section class="admin-overview-grid">
+    <article class="med-card"><header class="admin-card-header"><div class="admin-card-title"><span class="material-icons-outlined">history</span><h2>Recent activity</h2></div><button class="admin-row-btn" type="button" (click)="refreshNow()"><span class="material-icons-outlined">refresh</span>Refresh</button></header><div class="admin-compact-empty"><span class="material-icons-outlined">history_toggle_off</span><h3>No recent administrative activity</h3><p>Recent approvals and account changes will appear here when an activity feed is available.</p></div></article>
+    <article class="med-card"><header class="admin-card-header"><div class="admin-card-title"><span class="material-icons-outlined">bolt</span><h2>Quick actions</h2></div></header><div class="admin-actions"><a class="admin-action" routerLink="/admin-dashboard/users/doctors"><span class="admin-action-icon material-icons-outlined">fact_check</span><div><strong>Review doctors</strong><small>Manage professional approvals</small></div><span class="material-icons-outlined">chevron_right</span></a><a class="admin-action" routerLink="/admin-dashboard/users/patients"><span class="admin-action-icon material-icons-outlined">group</span><div><strong>Manage patients</strong><small>View registered accounts</small></div><span class="material-icons-outlined">chevron_right</span></a><a class="admin-action" routerLink="/admin-dashboard/specialties-management"><span class="admin-action-icon material-icons-outlined">clinical_notes</span><div><strong>Specialties</strong><small>Maintain the medical catalog</small></div><span class="material-icons-outlined">chevron_right</span></a></div></article>
+  </section>
+</div>

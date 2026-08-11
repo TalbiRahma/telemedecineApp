@@ -1,24 +1,24 @@
 import { Component, OnInit } from '@angular/core';
-import { NgFor, NgIf } from '@angular/common';
+import { DecimalPipe, NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms'; 
 import { RegisterRequest } from '../../models/auth/register-request';
 import { AuthenticationResponse } from '../../models/auth/authentication-response';
 import { Authentication } from '../../services/auth/authentication';
 import { Router } from '@angular/router';
-import { VerificationRequest } from '../../models/auth/verification-request';
+import { RouterLink } from '@angular/router';
 import { Specialty } from '../../models/specialty';
 import { SpecialtyService } from '../../services/specialty/specialty-service';
 import { DoctorRegisterRequest } from '../../models/auth/doctor-register-request';
-import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-register',
-  imports: [NgIf, FormsModule, NgFor],
+  imports: [NgIf, FormsModule, NgFor, RouterLink, DecimalPipe],
   templateUrl: './register.html',
   styleUrl: './register.scss'
 })
 
 export class Register implements OnInit {
+  activeRole: 'PATIENT' | 'DOCTOR' = 'PATIENT';
 
   registerRequest: RegisterRequest = {
     firstname: '',
@@ -40,15 +40,15 @@ export class Register implements OnInit {
   message = '';
   otpCode = '';
   specialties: Specialty[] = [];
-  isLoading = false; 
+  isLoading = false;
+  isSpecialtiesLoading = false;
   errorMessage = ''; 
   selectedFile: File | null = null;
 
   constructor(
     private authService: Authentication,
     private router: Router,
-    private specialtyService: SpecialtyService,
-    private http: HttpClient
+    private specialtyService: SpecialtyService
   ){
   }
 
@@ -57,18 +57,18 @@ export class Register implements OnInit {
   }
 
   loadSpecialties(): void {
-    this.isLoading = true;
+    this.isSpecialtiesLoading = true;
     this.errorMessage = '';
 
     this.specialtyService.getAllSpecialties().subscribe({
       next: (data) => {
         this.specialties = data;
-        this.isLoading = false;
+        this.isSpecialtiesLoading = false;
       },
       error: (error) => {
         console.error('Error loading specialties:', error);
         this.errorMessage = 'Failed to load specialties. Please try again.';
-        this.isLoading = false;
+        this.isSpecialtiesLoading = false;
       }
     })
   }
@@ -80,26 +80,13 @@ export class Register implements OnInit {
       .subscribe({
         next: (response) => {
             this.authResponse = response;
-            if (response.accessToken) {
-            localStorage.setItem('authToken', response.accessToken);
-                }
-            if (response.refreshToken) {
-              localStorage.setItem('refreshToken', response.refreshToken);
-            }
-            //
-            if (this.registerRequest.mfaEnabled === false ){
+            if (response.mfaRequired) {
+              this.startMfa(response);
+            } else if (this.authService.storeSession(response)) {
                this.message = 'Account created successfullt\nYou will be redirected to the login page in 3 secondes'
-            setTimeout(() => {
-              this.redirectBasedOnRole();
-            }, 3000)
-            }else {
-              console.log('email', this.registerRequest.email);
-              this.router.navigate(['two-fa'], {
-               queryParams: { 
-                email: this.registerRequest.email, 
-                secretImageUri: response.secretImageUri 
-              } 
-            });
+              setTimeout(() => this.redirectBasedOnRole(), 3000);
+            } else {
+              this.message = 'Registration did not return a valid session. Please sign in.';
             }
         },
         error: (err) => {
@@ -111,6 +98,9 @@ export class Register implements OnInit {
 
 
   registerDoctor() {
+  if (this.isLoading) {
+    return;
+  }
   this.message = '';
   
   this.doctorRegisterRequest.mfaEnabled = this.registerRequest.mfaEnabled;
@@ -132,57 +122,40 @@ export class Register implements OnInit {
     return;
   }
 
+  this.isLoading = true;
   this.authService.doctorRegister(this.doctorRegisterRequest, this.selectedFile).subscribe({
     next: (response: AuthenticationResponse) => {
+      this.isLoading = false;
       this.message = 'Doctor account created successfully!\nRedirecting to login page...';
       
-      if (response.accessToken) {
-            localStorage.setItem('authToken', response.accessToken);
-                }
-            if (response.refreshToken) {
-              localStorage.setItem('refreshToken', response.refreshToken);
-            }
-
-      if (this.doctorRegisterRequest.mfaEnabled === false ){
+      if (response.mfaRequired) {
+        this.startMfa(response);
+      } else if (this.authService.storeSession(response)) {
                this.message = 'Account created successfullt\nYou will be redirected to the login page in 3 secondes'
-            setTimeout(() => {
-              this.router.navigate(['welcome']);
-            }, 3000)
-            }else {
-              console.log('email:', this.doctorRegisterRequest.email);
-              console.log('secretImageUri:', response.secretImageUri );
-              this.router.navigate(['two-fa'], {
-               queryParams: { 
-                email: this.doctorRegisterRequest.email, 
-                secretImageUri: response.secretImageUri 
-              } 
-            });
-          }
+        setTimeout(() => this.redirectBasedOnRole(), 3000);
+      } else {
+        this.message = 'Registration did not return a valid session. Please sign in.';
+      }
     },
     error: (err) => {
+      this.isLoading = false;
       console.error('Doctor registration failed:', err);
-      this.message = err?.error?.message || 'Doctor registration failed. Please try again.';
+      const backendMessage = typeof err?.error?.message === 'string'
+        ? err.error.message
+        : null;
+      this.message = backendMessage || 'Doctor registration failed. Please try again.';
     }
   });
 }
 
-  verifyTfa() {
-    this.message = '';
-    const verifyRequest: VerificationRequest = {
-      email: this.registerRequest.email,
-      code: this.otpCode
-    };
-    console.log('Sending verification request:', verifyRequest);
-    this.authService.verifyCode(verifyRequest)
-      .subscribe({
-        next: (response)=> {
-          this.message = 'Account created successfullt\nYou will be redirected to the welcome page in 3 secondes'
-          setTimeout(() => {
-            localStorage.setItem('token', response.accessToken as string);
-            this.redirectBasedOnRole();
-          }, 3000);
-        }
-      })
+  private startMfa(response: AuthenticationResponse): void {
+    if (!this.authService.beginMfa(response)) {
+      this.message = 'Unable to start two-factor setup. Please sign in and try again.';
+      return;
+    }
+    this.router.navigate(['/mfa-setup'], {
+      state: { qrCodeImageUri: response.qrCodeImageUri || null }
+    });
   }
 
   onFileSelected(event: Event) {
@@ -190,6 +163,11 @@ export class Register implements OnInit {
     if (target.files && target.files.length > 0) {
       this.selectedFile = target.files[0];
     }
+  }
+
+  clearSelectedFile(input: HTMLInputElement): void {
+    this.selectedFile = null;
+    input.value = '';
   }
 
   redirectBasedOnRole() {
@@ -200,7 +178,7 @@ export class Register implements OnInit {
       this.router.navigate(['/admin-dashboard/overview']);
       break;
     case 'DOCTOR':
-      this.router.navigate(['/doctor-dashboard']);
+      this.router.navigate(['/doctor-dashboard/overview']);
       break;
     case 'PATIENT':
       this.router.navigate(['/patient-dashboard']);
@@ -210,4 +188,4 @@ export class Register implements OnInit {
       break;
   }
 }
-} 
+}

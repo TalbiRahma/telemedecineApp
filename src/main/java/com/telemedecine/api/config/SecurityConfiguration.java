@@ -1,7 +1,9 @@
 package com.telemedecine.api.config;
 
 import com.telemedecine.api.security.JwtAuthenticationFilter;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpMethod;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -31,9 +33,22 @@ public class SecurityConfiguration {
               .and()
               .csrf().disable()
               .authorizeHttpRequests()
+              .requestMatchers(HttpMethod.GET, "/api/v1/health")
+              .permitAll()
+              .requestMatchers(HttpMethod.GET,
+                      "/api/v1/specialties/all",
+                      "/api/v1/specialties/{id}")
+              .permitAll()
               .requestMatchers(
-                      "/api/v1/specialties/**",
-                      "/api/v1/auth/**",
+                      "/api/v1/auth/register",
+                      "/api/v1/auth/register/doctor",
+                      "/api/v1/auth/authenticate",
+                      "/api/v1/auth/mfa/verify",
+                      "/api/v1/auth/mfa/enroll/verify",
+                      "/api/v1/auth/mfa/enroll/resume",
+                      "/api/v1/auth/refresh-token",
+                      "/api/v1/auth/forgot-password",
+                      "/api/v1/auth/reset-password",
                       "/v2/api-docs",
                       "/v3/api-docs",
                       "/v3/api-docs/**",
@@ -53,6 +68,9 @@ public class SecurityConfiguration {
               .and()
               .authenticationProvider(authenticationProvider)
               .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+              .exceptionHandling(exceptions -> exceptions
+                      .authenticationEntryPoint((request, response, exception) ->
+                              response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authentication required")))
               .logout(logout -> logout
                       .logoutUrl("/api/v1/auth/logout")
                       .addLogoutHandler(logoutHandler)

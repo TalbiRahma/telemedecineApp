@@ -24,6 +24,10 @@ public class TwoFactorAuthenticationService {
 
     public String generateQrCodeImageUri(String secret) {
 
+        if (secret == null || secret.isBlank()) {
+            throw new IllegalArgumentException("An MFA secret is required to generate a QR code.");
+        }
+
         QrData data = new QrData.Builder()
                 .label("telemedecine 2FA")
                 .secret(secret)
@@ -38,14 +42,17 @@ public class TwoFactorAuthenticationService {
         try{
             imageData = generator.generate(data);
         } catch (QrGenerationException e) {
-            e.printStackTrace();
-            log.error("Error while generating QR code image");
+            log.error("Error while generating MFA QR code image", e);
+            throw new IllegalStateException("Unable to generate MFA enrollment QR code.", e);
         }
 
         return getDataUriForImage(imageData, generator.getImageMimeType());
     }
 
-    public boolean isOtpVlid(String secret, String code) {
+    public boolean isOtpValid(String secret, String code) {
+        if (secret == null || secret.isBlank() || code == null || !code.matches("^\\d{6}$")) {
+            return false;
+        }
         TimeProvider timeProvider = new SystemTimeProvider();
         CodeGenerator codeGenerator = new DefaultCodeGenerator();
         CodeVerifier verifier = new DefaultCodeVerifier(codeGenerator, timeProvider);
@@ -53,6 +60,6 @@ public class TwoFactorAuthenticationService {
     }
 
     public boolean isOtpNotValid(String secret, String code) {
-        return !this.isOtpVlid(secret, code);
+        return !this.isOtpValid(secret, code);
     }
 }

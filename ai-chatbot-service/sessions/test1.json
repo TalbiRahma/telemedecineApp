@@ -1,0 +1,23 @@
+{
+  "session_id": "test1",
+  "updated_at": "2026-01-22T21:24:21.221642+00:00",
+  "summary": "- Symptoms: Fever, sore throat, chest pain\n- Duration: 2 days\n- Severity: Unknown\n- Risk factors: None mentioned\n- Meds/allergies: None mentioned\n- Tests done: None\n- Red flags: Fever, sore throat, chest pain, difficulty swallowing, shortness of breath require immediate medical attention",
+  "recent_messages": [
+    {
+      "role": "assistant",
+      "content": "Possible conditions (ranked): \n1. Viral pharyngitis (most likely due to the presence of a low-grade fever and a gray tonsillar pseudo-membrane)\n2. Streptococcal pharyngitis (GABHS)\n3. Other bacterial infections (e.g., Neisseria gonorrhoeae, Mycoplasma, Chlamydia trachomatis)\n\nUrgency level: Moderate (the presence of a fever and sore throat requires medical attention, but it's not immediately life-threatening)\n\nNext steps: \n1. Consult a doctor for a physical examination and medical history.\n2. A throat culture or rapid test may be ordered to determine the cause of the infection.\n\nRecommended doctor specialty: Primary care physician or an Ear, Nose, and Throat (ENT) specialist.\n\nFollow-up questions: \n1. Can you describe the severity of your sore throat and how long you've been experiencing it?\n2. Have you noticed any other symptoms, such as a runny nose, cough, or difficulty swallowing?\n\n> DISCLAIMER: This is NOT medical advice, a diagnosis, or treatment recommendation."
+    },
+    {
+      "role": "user",
+      "content": "I also have chest pain"
+    },
+    {
+      "role": "assistant",
+      "content": "Possible conditions (ranked): \n1. Pulmonary embolism (due to the presence of chest pain and potential dyspnea)\n2. Pneumonia (given the fever and potential respiratory symptoms)\n3. Gastroesophageal reflux disease (GERD) or esophageal motility disorders (considering the chest pain and potential upper gastrointestinal symptoms)\n4. Cardiac disorders (such as myocarditis, pericarditis, or coronary artery disease)\n5. Musculoskeletal issues (such as thoracic outlet syndrome or chest wall disease)\n\nUrgency level: High (chest pain, especially when combined with fever, requires immediate medical attention)\n\nNext steps: \n1. Seek immediate medical attention at an emergency department or urgent care center.\n2. A thorough physical examination, medical history, and diagnostic tests (such as chest X-rays, ECG, or blood work) will be necessary to determine the cause of the chest pain.\n\nRecommended doctor specialty: Cardiologist or an Emergency Medicine specialist.\n\nFollow-up questions: \n1. Can you describe the nature and severity of your chest pain (e.g., sharp, dull, constant, or intermittent)?\n2. Are you experiencing any shortness of breath, dizziness, or palpitations in addition to the chest pain?\n\n> DISCLAIMER: This is NOT medical advice, a diagnosis, or treatment recommendation."
+    },
+    {
+      "role": "assistant",
+      "content": "urgency=MEDIUM; top_diagnosis=Viral pharyngitis"
+    }
+  ]
+}

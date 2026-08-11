@@ -1,0 +1,23 @@
+{
+  "session_id": "8b4748bd-9ab4-441c-b693-1169fc950c0d",
+  "updated_at": "2026-08-11T12:05:18.476164+00:00",
+  "summary": "**Updated Summary:**\n\nSymptoms: Cough, runny nose, difficulty breathing, headache, fever, nausea, vomiting, fatigue\nDuration: Unknown\nSeverity: MEDIUM\nRisk Factors: None mentioned\nMeds/Allergies: None mentioned\nTests Done: None\nRed Flags: Difficulty breathing, sudden severe headache, fever above 103°F, confusion or disorientation, severe abdominal pain, vomiting blood or black tarry stools, seek medical attention immediately",
+  "recent_messages": [
+    {
+      "role": "user",
+      "content": "cc"
+    },
+    {
+      "role": "assistant",
+      "content": "urgency=MEDIUM; top_diagnosis=Viral infection"
+    },
+    {
+      "role": "user",
+      "content": "fatigue"
+    },
+    {
+      "role": "assistant",
+      "content": "urgency=MEDIUM; top_diagnosis=Anemia"
+    }
+  ]
+}

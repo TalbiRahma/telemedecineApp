@@ -19,4 +19,13 @@ public class AppointmentDto {
 
     private Long slotId;
     private Long patientId;
+    private LocalDateTime slotStartDateTime;
+    private LocalDateTime slotEndDateTime;
+    private Long doctorId;
+    private String doctorFirstname;
+    private String doctorLastname;
+    private String doctorSpecialtyName;
+    private String doctorAdresse;
+    private String doctorPhone;
+    private String patientName;
 }

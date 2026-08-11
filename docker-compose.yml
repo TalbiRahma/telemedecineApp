@@ -1,0 +1,115 @@
+name: medilink
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - medilink-network
+
+  ai-service:
+    build:
+      context: ./ai-chatbot-service
+    environment:
+      GROQ_API_KEY: ${GROQ_API_KEY}
+      HF_TOKEN: ${HF_TOKEN:-}
+      INDEX_DIR: /app/faiss_index
+      SESSIONS_DIR: /app/sessions
+      EMBED_MODEL: ${EMBED_MODEL:-sentence-transformers/all-mpnet-base-v2}
+      GROQ_MODEL: ${GROQ_MODEL:-llama-3.3-70b-versatile}
+      SUMMARY_MODEL: ${SUMMARY_MODEL:-llama-3.1-8b-instant}
+      GROQ_TEMPERATURE: ${GROQ_TEMPERATURE:-0.2}
+      RECENT_TURNS: ${RECENT_TURNS:-2}
+      SUMMARY_MAX_CHARS: ${SUMMARY_MAX_CHARS:-1200}
+      HF_HOME: /root/.cache/huggingface
+    ports:
+      - "${AI_PORT:-8000}:8000"
+    volumes:
+      - ai_sessions:/app/sessions
+      - huggingface_cache:/root/.cache/huggingface
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=3)"]
+      interval: 15s
+      timeout: 5s
+      start_period: 120s
+      retries: 8
+    networks:
+      - medilink-network
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      DB_URL: ${DB_URL:-jdbc:postgresql://postgres:5432/telemedecineapi}
+      DB_USERNAME: ${DB_USERNAME:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION_MS: ${JWT_EXPIRATION_MS:-86400000}
+      JWT_REFRESH_EXPIRATION_MS: ${JWT_REFRESH_EXPIRATION_MS:-604800000}
+      SMTP_HOST: ${SMTP_HOST:-smtp.gmail.com}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USERNAME: ${SMTP_USERNAME}
+      SMTP_PASSWORD: ${SMTP_PASSWORD}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost}
+      PASSWORD_RESET_EXPIRATION_MINUTES: ${PASSWORD_RESET_EXPIRATION_MINUTES:-20}
+      PASSWORD_RESET_REQUEST_COOLDOWN_SECONDS: ${PASSWORD_RESET_REQUEST_COOLDOWN_SECONDS:-60}
+      ADMIN_BOOTSTRAP_ENABLED: ${ADMIN_BOOTSTRAP_ENABLED:-false}
+      ADMIN_BOOTSTRAP_EMAIL: ${ADMIN_BOOTSTRAP_EMAIL:-}
+      ADMIN_BOOTSTRAP_PASSWORD: ${ADMIN_BOOTSTRAP_PASSWORD:-}
+      MFA_CHALLENGE_EXPIRATION_MINUTES: ${MFA_CHALLENGE_EXPIRATION_MINUTES:-5}
+      MFA_MAX_ATTEMPTS: ${MFA_MAX_ATTEMPTS:-5}
+      CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME:-}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY:-}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET:-}
+      ZOOM_ACCOUNT_ID: ${ZOOM_ACCOUNT_ID:-}
+      ZOOM_CLIENT_ID: ${ZOOM_CLIENT_ID:-}
+      ZOOM_CLIENT_SECRET: ${ZOOM_CLIENT_SECRET:-}
+      AI_SERVICE_URL: http://ai-service:8000
+    ports:
+      - "${BACKEND_PORT:-8080}:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      ai-service:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/api/v1/health"]
+      interval: 10s
+      timeout: 5s
+      start_period: 30s
+      retries: 6
+    networks:
+      - medilink-network
+
+  frontend:
+    build:
+      context: ./angular-frontend
+    ports:
+      - "${FRONTEND_PORT:-80}:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - medilink-network
+
+volumes:
+  postgres_data:
+  ai_sessions:
+  huggingface_cache:
+
+networks:
+  medilink-network:
+    driver: bridge

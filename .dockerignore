@@ -1,0 +1,12 @@
+.git
+.gitignore
+.idea
+.vscode
+.env
+*.log
+target
+angular-frontend
+ai-chatbot-service
+docs
+http
+*.zip

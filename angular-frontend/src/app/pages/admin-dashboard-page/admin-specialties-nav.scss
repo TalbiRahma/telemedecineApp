@@ -1,0 +1,40 @@
+.admin-nav .admin-specialties-link {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 13px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.admin-specialties-icon {
+  order: 0;
+  width: 20px;
+  min-width: 20px;
+  max-width: 20px;
+  flex: 0 0 20px;
+  overflow: hidden;
+  color: inherit;
+}
+
+.admin-specialties-label {
+  order: 1;
+  min-width: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-nav .admin-specialties-link.active {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  color: var(--primary-dark);
+  background: var(--primary-soft);
+  border-color: #d1edf1;
+}

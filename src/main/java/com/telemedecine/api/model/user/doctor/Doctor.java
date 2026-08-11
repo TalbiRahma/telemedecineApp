@@ -23,9 +23,10 @@ public class Doctor extends UserEntity {
 
 
     @Pattern(
-            regexp = "^[A-Za-z]{3}-?\\d{5,7}$",  // format: 3 lettres + 5-7 chiffres, tiret optionnel
-            message = "License number must be 3 letters followed by 5 to 7 digits"
+            regexp = "^[A-Za-z0-9][A-Za-z0-9-]{2,49}$",
+            message = "License number contains invalid characters"
     )
+    @Column(nullable = false, unique = true, length = 50)
     private String licenseNumber;
 
     @ManyToOne(fetch = FetchType.LAZY)

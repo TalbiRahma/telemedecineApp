@@ -2,30 +2,37 @@ package com.telemedecine.api.mapper;
 
 import com.telemedecine.api.dto.AppointmentDto;
 import com.telemedecine.api.model.appointement.Appointment;
+import com.telemedecine.api.model.slot.Slot;
 import com.telemedecine.api.model.user.Patient;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
+import com.telemedecine.api.model.user.doctor.Doctor;
+import com.telemedecine.api.model.user.doctor.DoctorAvailability;
+import org.springframework.stereotype.Component;
 
-@Mapper(componentModel = "spring")
-public interface AppointmentMapper {
+@Component
+public class AppointmentMapper {
+    public AppointmentDto toDto(Appointment appointment) {
+        Slot slot = appointment.getSlot();
+        DoctorAvailability availability = slot == null ? null : slot.getAvailability();
+        Doctor doctor = availability == null ? null : availability.getDoctor();
+        Patient patient = appointment.getPatient();
 
-    @Mappings({
-            @Mapping(source = "slot.id", target = "slotId"),
-            @Mapping(source = "patient.id", target = "patientId")
-    })
-    AppointmentDto toDto(Appointment appointment);
-
-    @Mappings({
-            @Mapping(source = "slotId", target = "slot.id"),
-            @Mapping(source = "patientId", target = "patient")
-    })
-    Appointment toEntity(AppointmentDto dto);
-
-    default Patient map(Long patientId) {
-        if (patientId == null) return null;
-        Patient patient = new Patient();
-        patient.setId(patientId);
-        return patient;
+        return AppointmentDto.builder()
+                .id(appointment.getId())
+                .bookedAt(appointment.getBookedAt())
+                .status(appointment.getStatus())
+                .slotId(slot == null ? null : slot.getId())
+                .patientId(patient == null ? null : patient.getId())
+                .slotStartDateTime(appointment.getScheduledStart())
+                .slotEndDateTime(appointment.getScheduledEnd())
+                .doctorId(doctor == null ? null : doctor.getId())
+                .doctorFirstname(doctor == null ? null : doctor.getFirstname())
+                .doctorLastname(doctor == null ? null : doctor.getLastname())
+                .doctorSpecialtyName(doctor == null || doctor.getSpecialty() == null
+                        ? null : doctor.getSpecialty().getName())
+                .doctorAdresse(doctor == null ? null : doctor.getAdresse())
+                .doctorPhone(doctor == null ? null : doctor.getPhone())
+                .patientName(patient == null ? null
+                        : (patient.getFirstname() + " " + patient.getLastname()).trim())
+                .build();
     }
 }

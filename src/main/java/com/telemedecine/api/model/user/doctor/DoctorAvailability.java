@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,11 +29,20 @@ public class DoctorAvailability {
     private Doctor doctor;
 
     private LocalDate date;
+
+    @Enumerated(EnumType.STRING)
+    private DayOfWeek dayOfWeek;
+
+    private LocalDate startDate;
+    private LocalDate endDate;
+
     private LocalTime startTime;
     private LocalTime endTime;
 
     @Enumerated(EnumType.STRING)
     private AvailabilityType type;
+
+    private Integer slotDuration;
 
     @OneToMany(mappedBy = "availability", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Slot> slots = new ArrayList<>();

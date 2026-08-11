@@ -11,6 +11,9 @@ import com.telemedecine.api.service.SlotService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -35,6 +38,18 @@ public class SlotServiceImpl implements SlotService {
     }
 
     @Override
+    public List<SlotDto> getFreeSlotsByDoctor(Long doctorId, LocalDateTime from, LocalDateTime to) {
+        return slotRepository.findByDoctorIdAndStatusAndDateBetween(
+                        doctorId, SlotStatus.FREE, from.toLocalDate(), to.toLocalDate()).stream()
+                .filter(slot -> {
+                    LocalDateTime start = LocalDateTime.of(slot.getAvailability().getDate(), slot.getStartTime());
+                    return !start.isBefore(from) && !start.isAfter(to);
+                })
+                .map(slotMapper::toDto)
+                .toList();
+    }
+
+    @Override
     public List<SlotDto> getSlotsByAvailability(Long availabilityId) {
         DoctorAvailability availability = availabilityRepository.findById(availabilityId)
                 .orElseThrow(() -> new RuntimeException("Availability not found"));
@@ -53,5 +68,32 @@ public class SlotServiceImpl implements SlotService {
         slot = slotRepository.save(slot);
 
         return slotMapper.toDto(slot);
+    }
+
+    @Override
+    public List<SlotDto> generateSlots(Long availabilityId, int durationMinutes) {
+        DoctorAvailability availability = availabilityRepository.findById(availabilityId)
+                .orElseThrow(() -> new RuntimeException("Availability not found"));
+
+        LocalTime start = availability.getStartTime();
+        LocalTime end = availability.getEndTime();
+
+        List<Slot> slots = new ArrayList<>();
+
+        while (start.plusMinutes(durationMinutes).isBefore(end) || start.plusMinutes(durationMinutes).equals(end)) {
+            Slot slot = Slot.builder()
+                    .availability(availability)
+                    .startTime(start)
+                    .endTime(start.plusMinutes(durationMinutes))
+                    .status(SlotStatus.FREE)
+                    .build();
+
+            slots.add(slot);
+            start = start.plusMinutes(durationMinutes);
+        }
+
+        slotRepository.saveAll(slots);
+
+        return slots.stream().map(slotMapper::toDto).toList();
     }
 }

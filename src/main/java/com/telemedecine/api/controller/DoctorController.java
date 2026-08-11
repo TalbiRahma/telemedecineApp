@@ -7,12 +7,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/doctor")
-@PreAuthorize("hasRole('DOCTOR')")
 @RequiredArgsConstructor
 public class DoctorController {
 
@@ -20,28 +20,43 @@ public class DoctorController {
 
 
     @PutMapping("/edit/{id}")
-    @PreAuthorize("hasAnyAuthority('doctor:update','doctor:manage')")
-    public ResponseEntity<DoctorDto> update(@PathVariable Long id, @Valid @RequestBody DoctorDto dto) {
-        return ResponseEntity.ok(doctorService.updateDoctor(id, dto));
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('DOCTOR') and #id == authentication.principal.id)")
+    public ResponseEntity<DoctorDto> update(
+            @PathVariable Long id, @Valid @RequestBody DoctorDto dto, Authentication authentication) {
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
+        return ResponseEntity.ok(doctorService.updateDoctor(id, dto, isAdmin));
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('doctor:delete')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         doctorService.deleteDoctor(id);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/get/{id}")
-    @PreAuthorize("hasAnyAuthority('doctor:read','doctor:manage')")
+    @PreAuthorize("hasAnyRole('DOCTOR','ADMIN')")
     public ResponseEntity<DoctorDto> getById(@PathVariable Long id) {
         return ResponseEntity.ok(doctorService.getById(id));
     }
 
     @GetMapping("/all")
-    @PreAuthorize("hasAnyAuthority('doctor:read','doctor:manage')")
+    @PreAuthorize("hasAnyRole('DOCTOR','ADMIN')")
     public ResponseEntity<List<DoctorDto>> getAll() {
         return ResponseEntity.ok(doctorService.getAll());
+    }
+
+    @GetMapping("/bookable")
+    @PreAuthorize("hasRole('PATIENT')")
+    public ResponseEntity<List<DoctorDto>> getBookableDoctors() {
+        return ResponseEntity.ok(doctorService.getBookableDoctors());
+    }
+
+    @GetMapping("/bookable/{id}")
+    @PreAuthorize("hasRole('PATIENT')")
+    public ResponseEntity<DoctorDto> getBookableDoctor(@PathVariable Long id) {
+        return ResponseEntity.ok(doctorService.getBookableDoctor(id));
     }
 
 }

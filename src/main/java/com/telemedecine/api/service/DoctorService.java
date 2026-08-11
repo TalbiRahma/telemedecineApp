@@ -13,12 +13,16 @@ import java.util.List;
 
 public interface DoctorService {
 
-    DoctorDto updateDoctor(Long id, DoctorDto doctorDto);
+    DoctorDto updateDoctor(Long id, DoctorDto doctorDto, boolean allowStateChange);
 
     void  deleteDoctor(Long id);
 
     DoctorDto getById(Long id);
 
     List<DoctorDto> getAll();
+
+    List<DoctorDto> getBookableDoctors();
+
+    DoctorDto getBookableDoctor(Long id);
 
 }

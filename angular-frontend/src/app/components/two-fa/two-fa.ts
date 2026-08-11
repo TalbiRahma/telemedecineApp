@@ -1,20 +1,19 @@
 import { Component } from '@angular/core';
 import { VerificationRequest } from '../../models/auth/verification-request';
-import { AuthenticationRequest } from '../../models/auth/authentication-request';
 import { AuthenticationResponse } from '../../models/auth/authentication-response';
 import { Authentication } from '../../services/auth/authentication';
 import { Router } from '@angular/router';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-two-fa',
-  imports: [],
+  imports: [NgIf],
   templateUrl: './two-fa.html',
   styleUrl: './two-fa.scss'
 })
 export class TwoFa {
 
-
-   authRequest: AuthenticationRequest = {};
+  enabled = true;
   otpCode: any;
   authResponse: AuthenticationResponse = {
      accessToken: '',
@@ -31,13 +30,13 @@ export class TwoFa {
   
     verifyCode(){
       const verifyRequest: VerificationRequest ={
-        email: this.authRequest.email,
-        code: this.otpCode
+        challengeToken: this.authService.getMfaChallenge()?.challengeToken || '',
+        code: String(this.otpCode || '')
       };
       this.authService.verifyCode(verifyRequest)
       .subscribe({
         next: (response) => {
-          localStorage.setItem('token', response.accessToken as string);
+          this.authService.storeSession(response);
           this.router.navigate(['welcome'])
         }
       })

@@ -1,0 +1,23 @@
+{
+  "session_id": "56fa48a8-4769-424b-b408-51593e37e163",
+  "updated_at": "2026-01-28T16:54:18.677473+00:00",
+  "summary": "The patient reports constant tiredness, weight gain, feeling cold, dry skin, hair loss, mood changes, and difficulty concentrating, with symptoms improving with rest. \nDifferential:\n- Hypothyroidism: HIGH\n- Depression: MEDIUM\n- Sleep Disorder: MEDIUM\n- Anemia: LOW\n- Chronic Fatigue Syndrome: LOW\nUrgency: MEDIUM\nNext steps: Blood tests to check for hypothyroidism and anemia, establish a consistent sleep schedule, and practice stress-reducing techniques.\nRed flags: Severe fatigue, worsening symptoms.\nFollow-up questions: Changes in bowel movements or menstrual cycle, improvements in symptoms with rest or relaxation.",
+  "recent_messages": [
+    {
+      "role": "assistant",
+      "content": "urgency=MEDIUM; top_diagnosis=Hypothyroidism"
+    },
+    {
+      "role": "assistant",
+      "content": "urgency=MEDIUM; top_diagnosis=Hypothyroidism"
+    },
+    {
+      "role": "assistant",
+      "content": "urgency=MEDIUM; top_diagnosis=Hypothyroidism"
+    },
+    {
+      "role": "assistant",
+      "content": "urgency=MEDIUM; top_diagnosis=Hypothyroidism"
+    }
+  ]
+}

@@ -31,3 +31,17 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Local secrets and generated dependencies ###
+.env
+*.env.local
+ai-chatbot-service/.env
+.venv/
+**/.venv/
+node_modules/
+**/node_modules/
+**/__pycache__/
+*.py[cod]
+angular-frontend/dist/
+
+!.env.example

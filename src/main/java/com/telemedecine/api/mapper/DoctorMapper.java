@@ -24,6 +24,7 @@ public abstract class DoctorMapper {
                 .firstname(doctor.getFirstname())
                 .lastname(doctor.getLastname())
                 .email(doctor.getEmail())
+                .phone(doctor.getPhone())
                 .licenseNumber(doctor.getLicenseNumber())
                 .adresse(doctor.getAdresse())
                 .certificationUrl(doctor.getCertificationUrl())
@@ -42,6 +43,7 @@ public abstract class DoctorMapper {
         doctor.setFirstname(dto.getFirstname());
         doctor.setLastname(dto.getLastname());
         doctor.setEmail(dto.getEmail());
+        doctor.setPhone(dto.getPhone());
         doctor.setLicenseNumber(dto.getLicenseNumber());
         doctor.setAdresse(dto.getAdresse());
         doctor.setCertificationUrl(dto.getCertificationUrl());

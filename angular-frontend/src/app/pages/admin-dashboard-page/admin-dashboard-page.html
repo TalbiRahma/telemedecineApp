@@ -1,96 +1,36 @@
-<div class="flex h-screen bg-gray-100">
-  <!-- Sidebar -->
-  <aside class="w-64 bg-gray-800 text-gray-200 flex flex-col">
-    <!-- Logo -->
-    <div class="h-16 flex items-center justify-center text-xl font-bold text-white border-b border-gray-700">
-      Admin Dashboard
+<div class="admin-shell">
+  <button *ngIf="sidebarOpen" class="admin-backdrop" type="button" aria-label="Close navigation" (click)="toggleSidebar()"></button>
+  <aside class="admin-sidebar" [class.open]="sidebarOpen" aria-label="Administration navigation">
+    <div class="admin-brand">
+      <span class="admin-brand-mark"><span class="material-icons-outlined">favorite</span></span>
+      <span class="admin-brand-copy"><strong>Medi<span>Link</span></strong><small>Admin console</small></span>
+      <button class="admin-mobile-close" type="button" aria-label="Close menu" (click)="toggleSidebar()"><span class="material-icons-outlined">close</span></button>
     </div>
-
-    <!-- Navigation -->
-    <nav class="flex-1 px-4 py-6 space-y-2">
-      <!-- Dashboard -->
-      <a [routerLink]="['/admin-dashboard/overview']" 
-         routerLinkActive="bg-gray-700 text-white"
-         class="flex items-center px-3 py-2 rounded-lg hover:bg-gray-700 hover:text-white">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M13 5v14" />
-        </svg>
-        Dashboard
-      </a>
-
-      <!-- Users (Dropdown) -->
-      <div class="space-y-1">
-        <button (click)="usersOpen = !usersOpen" 
-                class="w-full flex items-center justify-between px-3 py-2 rounded-lg hover:bg-gray-700 hover:text-white focus:outline-none">
-          <div class="flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V7a2 2 0 00-2-2h-4V3H10v2H6a2 2 0 00-2 2v6m16 0H4v6a2 2 0 002 2h12a2 2 0 002-2v-6z" />
-            </svg>
-            Users
-          </div>
-          <svg [class.rotate-180]="usersOpen" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-          </svg>
-        </button>
-
-        <!-- Dropdown items -->
-        <div *ngIf="usersOpen" class="ml-6 space-y-1">
-          <a [routerLink]="['/admin-dashboard/users/doctors']" 
-             routerLinkActive="bg-gray-700 text-white"
-             class="block px-3 py-2 rounded-lg hover:bg-gray-700 hover:text-white">
-            Doctors
-          </a>
-          <a routerLink="/admin-dashboard/users/patients" 
-             routerLinkActive="bg-gray-700 text-white"
-             class="block px-3 py-2 rounded-lg hover:bg-gray-700 hover:text-white">
-            Patients
-          </a>
-        </div>
+    <p class="admin-nav-label">Administration</p>
+    <nav class="admin-nav">
+      <a routerLink="/admin-dashboard/overview" routerLinkActive="active"><span class="material-icons-outlined">space_dashboard</span>Overview</a>
+      <button class="admin-nav-parent" type="button" [attr.aria-expanded]="usersOpen" (click)="usersOpen = !usersOpen"><span class="material-icons-outlined">group</span><span>Users</span><span class="material-icons-outlined chevron" [class.rotated]="usersOpen">expand_more</span></button>
+      <div *ngIf="usersOpen" class="admin-subnav">
+        <a routerLink="/admin-dashboard/users/doctors" routerLinkActive="active"><span class="material-icons-outlined">medical_services</span>Doctors</a>
+        <a routerLink="/admin-dashboard/users/patients" routerLinkActive="active"><span class="material-icons-outlined">personal_injury</span>Patients</a>
       </div>
-
-      <!-- Reports -->
-      <a routerLink="/admin-dashboard/specialties-management" 
-         routerLinkActive="bg-gray-700 text-white"
-         class="flex items-center px-3 py-2 rounded-lg hover:bg-gray-700 hover:text-white">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-6h13M9 5v6m-6 4h6m0-4H3m0 0h6m0 4v-4" />
-        </svg>
-        Specialties
+      <a class="admin-specialties-link" routerLink="/admin-dashboard/specialties-management" routerLinkActive="active">
+        <span class="material-icons-outlined admin-specialties-icon" aria-hidden="true">clinical_notes</span>
+        <span class="admin-specialties-label">Specialties</span>
       </a>
-
-      <!-- Settings -->
-      <a routerLink="/admin-dashboard/settings" 
-         routerLinkActive="bg-gray-700 text-white"
-         class="flex items-center px-3 py-2 rounded-lg hover:bg-gray-700 hover:text-white">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 11V5a4 4 0 014-4h2a4 4 0 014 4v6a4 4 0 01-4 4h-2a4 4 0 01-4-4z" />
-        </svg>
-        Settings
-      </a>
+      <a routerLink="/admin-dashboard/settings" routerLinkActive="active"><span class="material-icons-outlined">settings</span>Settings</a>
     </nav>
-
-    <!-- Footer -->
-    <div class="p-4 border-t border-gray-700">
-      <button class="w-full bg-red-500 hover:bg-red-600 text-white py-2 px-3 rounded-lg" (click)="onLogout()">
-        Logout
-      </button>
+    <div class="admin-sidebar-bottom">
+      <div class="admin-context"><span class="material-icons-outlined">admin_panel_settings</span><strong>Administration workspace</strong><p>Manage approvals and platform data securely.</p></div>
+      <button class="admin-logout" type="button" (click)="onLogout()"><span class="material-icons-outlined">logout</span>Log out</button>
     </div>
   </aside>
-
-  <!-- Main content -->
-  <div class="flex-1 flex flex-col">
-    <!-- Top bar -->
-    <header class="h-16 bg-white shadow flex items-center justify-between px-6">
-      <h1 class="text-xl font-semibold">{{ getPageTitle() }}</h1>
-      <div class="flex items-center space-x-4">
-        <span class="text-gray-700">Admin</span>
-        <img src="https://i.pravatar.cc/40" alt="profile" class="w-10 h-10 rounded-full border" />
-      </div>
+  <main class="admin-workspace">
+    <header class="admin-topbar">
+      <button class="admin-menu" type="button" aria-label="Open navigation" (click)="toggleSidebar()"><span class="material-icons-outlined">menu</span></button>
+      <div class="admin-topbar-title"><strong>{{ currentPageTitle }}</strong><small>MediLink administration</small></div>
+      <div class="admin-identity"><span class="admin-avatar">{{ adminInitials }}</span><span><strong>{{ adminName }}</strong><small>Super Admin</small></span></div>
     </header>
-
-    <!-- Content area -->
-    <main class="flex-1 p-6 overflow-y-auto">
-      <router-outlet></router-outlet>
-    </main>
-  </div>
+    <section class="admin-content"><router-outlet></router-outlet></section>
+  </main>
 </div>

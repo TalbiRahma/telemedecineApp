@@ -7,19 +7,23 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.awt.datatransfer.StringSelection;
-
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AuthenticationResponse {
 
     @JsonProperty("accessToken")
     private String accessToken;
     private String refreshToken;
     private boolean mfaEnabled;
+    private boolean mfaRequired;
+    private boolean mfaEnrollmentRequired;
+    private String mfaChallengeToken;
+    private String qrCodeImageUri;
+    /** Kept for wire compatibility; populated only during enrollment, never normal login. */
+    @Deprecated
     private String secretImageUri;
 
 }

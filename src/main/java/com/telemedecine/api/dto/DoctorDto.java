@@ -16,6 +16,7 @@ public class DoctorDto {
     private String firstname;
     private String lastname;
     private String email;
+    private String phone;
     private String licenseNumber;
     private String adresse;
     private String certificationUrl;

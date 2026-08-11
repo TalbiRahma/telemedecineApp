@@ -1,5 +1,6 @@
 package com.telemedecine.api.security;
 
+import com.telemedecine.api.model.user.UserEntity;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -39,7 +40,6 @@ public class JwtService {
 
 
     public String generateToken(UserDetails userDetails) {
-
         return generateToken(new HashMap<>(), userDetails);
     }
 
@@ -47,13 +47,24 @@ public class JwtService {
             Map<String, Object> extraClaims,
             UserDetails userDetails
     ) {
+        extraClaims.put("tokenType", "ACCESS");
         return buildToken(extraClaims, userDetails, jwtExpiration);
     }
 
     public String generateRefreshToken(
             UserDetails userDetails
     ) {
-        return buildToken(new HashMap<>(), userDetails, refreshExpiration);
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("tokenType", "REFRESH");
+        return buildToken(claims, userDetails, refreshExpiration);
+    }
+
+    public boolean isAccessToken(String jwtToken) {
+        return "ACCESS".equals(extractClaim(jwtToken, claims -> claims.get("tokenType", String.class)));
+    }
+
+    public boolean isRefreshToken(String jwtToken) {
+        return "REFRESH".equals(extractClaim(jwtToken, claims -> claims.get("tokenType", String.class)));
     }
 
     private String buildToken(
@@ -68,11 +79,24 @@ public class JwtService {
                 .filter(auth -> auth.startsWith("ROLE_"))
                 .findFirst()
                 .orElse(null);
+
+
+        Long userId = null;
+        int authenticationVersion = 0;
+        if (userDetails instanceof UserEntity) {
+            UserEntity user = (UserEntity) userDetails;
+            userId = user.getId();
+            authenticationVersion = user.getAuthenticationVersion() == null
+                    ? 0 : user.getAuthenticationVersion();
+        }
+
         return Jwts
                 .builder()
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .claim("role", role != null ? role.replace("ROLE_", "") : null)
+                .claim("id", userId)
+                .claim("authVersion", authenticationVersion)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
@@ -81,7 +105,19 @@ public class JwtService {
 
     public boolean isTokenValid(String jwtToken, UserDetails userDetails) {
         final String username = extractUsername(jwtToken);
-        return (username.equals(userDetails.getUsername())) && !isTokenExpired(jwtToken);
+        return username.equals(userDetails.getUsername())
+                && !isTokenExpired(jwtToken)
+                && hasCurrentAuthenticationVersion(jwtToken, userDetails);
+    }
+
+    private boolean hasCurrentAuthenticationVersion(String jwtToken, UserDetails userDetails) {
+        if (!(userDetails instanceof UserEntity user)) {
+            return true;
+        }
+        Integer tokenVersion = extractClaim(jwtToken, claims -> claims.get("authVersion", Integer.class));
+        int currentVersion = user.getAuthenticationVersion() == null ? 0 : user.getAuthenticationVersion();
+        int issuedVersion = tokenVersion == null ? 0 : tokenVersion;
+        return issuedVersion == currentVersion;
     }
 
     private boolean isTokenExpired(String jwtToken) {

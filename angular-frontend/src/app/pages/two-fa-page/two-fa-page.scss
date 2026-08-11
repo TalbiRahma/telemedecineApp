@@ -1,0 +1,13 @@
+@use '../login/login.scss';
+
+.qr-code { display: grid; place-items: center; margin: 4px 0 8px; }
+.qr-code img { width: 210px; height: 210px; padding: 8px; border: 1px solid var(--border); border-radius: 16px; background: #fff; }
+.otp-input { text-align: center; font-size: 1.35rem; font-weight: 700; letter-spacing: .32em; }
+.verification-block .login-heading { margin-bottom: 8px; }
+
+.recovery-option { margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--border); text-align: center; }
+.recovery-option span { color: var(--text-muted); font-size: .8rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
+.recovery-option p { margin: 7px 0 10px; color: var(--text-muted); font-size: .92rem; }
+.recovery-action { border: 1px solid var(--primary); border-radius: 10px; padding: 9px 14px; background: #fff; color: var(--primary); font: inherit; font-size: .9rem; font-weight: 700; cursor: pointer; }
+.recovery-action:hover:not(:disabled) { background: color-mix(in srgb, var(--primary) 7%, white); }
+.recovery-action:disabled { cursor: not-allowed; opacity: .55; }

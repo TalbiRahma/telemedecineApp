@@ -9,9 +9,13 @@ import org.mapstruct.*;
 public interface DoctorAvailabilityMapper {
 
     @Mapping(target = "doctorId", expression = "java(entity.getDoctor() != null ? entity.getDoctor().getId() : null)")
+    @Mapping(target = "slotDuration", source = "slotDuration")
+    @Mapping(target = "slots", ignore = true)
     DoctorAvailabilityDTO toDto(DoctorAvailability entity);
 
     @Mapping(target = "doctor", expression = "java(mapDoctorId(dto.getDoctorId()))")
+    @Mapping(target = "slotDuration", source = "slotDuration")
+    @Mapping(target = "slots", ignore = true)
     DoctorAvailability toEntity(DoctorAvailabilityDTO dto);
 
     default Doctor mapDoctorId(Long doctorId) {

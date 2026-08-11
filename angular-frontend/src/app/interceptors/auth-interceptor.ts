@@ -1,96 +1,100 @@
-import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpHandlerFn, HttpInterceptorFn, HttpRequest } from '@angular/common/http';
 import { inject } from '@angular/core';
+import { Observable, catchError, finalize, shareReplay, switchMap, tap, throwError } from 'rxjs';
+import { AuthenticationResponse } from '../models/auth/authentication-response';
 import { Authentication } from '../services/auth/authentication';
-import { catchError, switchMap, throwError } from 'rxjs';
 
-// auth.interceptor.ts
+let refreshInProgress$: Observable<AuthenticationResponse> | null = null;
+let redirectingToLogin = false;
+
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(Authentication);
+  const hasStorage = typeof window !== 'undefined' && !!window.localStorage;
+  const path = req.url.split('?')[0];
 
-  let authToken: string | null = localStorage.getItem('authToken');
-  
-  console.log('Interceptor - Current token:', authToken);
-  
-  if (authToken) {
-    // Check if token is expired before using it
-    const decodedToken = authService.getDecodedToken();
-    if (decodedToken && decodedToken.exp) {
-      const expirationTime = decodedToken.exp * 1000; // Convert to milliseconds
-      const currentTime = Date.now();
-      
-      console.log('Token expires at:', new Date(expirationTime));
-      console.log('Current time:', new Date(currentTime));
-      console.log('Token valid:', currentTime < expirationTime);
-      
-      if (currentTime >= expirationTime) {
-        console.log('Token expired, attempting refresh...');
-        // Token is expired, don't use it
-        authToken = null;
-      }
-    }
+  const isRefreshRequest = path.endsWith('/api/v1/auth/refresh-token');
+  const isPublicAuthRequest =
+    path.endsWith('/api/v1/auth/authenticate') ||
+    path.includes('/api/v1/auth/register') ||
+    path.endsWith('/api/v1/auth/mfa/verify') ||
+    path.endsWith('/api/v1/auth/mfa/enroll/verify') ||
+    path.endsWith('/api/v1/auth/mfa/enroll/resume') ||
+    path.endsWith('/api/v1/auth/forgot-password') ||
+    path.endsWith('/api/v1/auth/reset-password');
+  const isPublicSpecialtyRequest =
+    req.method === 'GET' && /\/api\/v1\/specialties\/(all|\d+)$/.test(path);
+  const isPublicRequest = isRefreshRequest || isPublicAuthRequest || isPublicSpecialtyRequest;
 
-    if (authToken) {
-      req = req.clone({
-        headers: req.headers.set('Authorization', `Bearer ${authToken}`)
-      });
-    }
+  if (isPublicRequest) {
+    // refresh-token carries its own refresh token header from Authentication.refreshToken().
+    return next(req);
   }
 
-  return next(req).pipe(
+  const accessToken = hasStorage ? localStorage.getItem('authToken') : null;
+  if (accessToken && authService.isTokenExpired()) {
+    return refreshAndRetry(req, next, authService, hasStorage);
+  }
+
+  const authenticatedRequest = accessToken ? withToken(req, accessToken) : req;
+  return next(authenticatedRequest).pipe(
     catchError((error: HttpErrorResponse) => {
-      console.log('Interceptor error:', error.status, error.message);
-      
-      if (error.status === 401) {
-        console.log('Attempting token refresh...');
-        return authService.refreshToken()!.pipe(
-          switchMap((res) => {
-            console.log('Refresh successful, new token:', res.accessToken);
-            localStorage.setItem('authToken', res.accessToken);
-
-            const newReq = req.clone({
-              headers: req.headers.set('Authorization', `Bearer ${res.accessToken}`)
-            });
-            return next(newReq);
-          }),
-          catchError(refreshErr => {
-            console.log('Refresh failed:', refreshErr);
-            localStorage.removeItem('authToken');
-            localStorage.removeItem('refreshToken');
-            window.location.href = '/login';
-            return throwError(() => refreshErr);
-          })
-        );
-      }
-
-      return throwError(() => error);
+      if (error.status !== 401) return throwError(() => error);
+      return refreshAndRetry(req, next, authService, hasStorage, error);
     })
   );
 };
 
+function refreshAndRetry(
+  originalRequest: HttpRequest<unknown>,
+  next: HttpHandlerFn,
+  authService: Authentication,
+  hasStorage: boolean,
+  originalError?: HttpErrorResponse
+) {
+  const refresh$ = getOrStartRefresh(authService, hasStorage);
+  if (!refresh$) return clearSessionAndFail(originalError, hasStorage);
 
+  return refresh$.pipe(
+    catchError((refreshError) => clearSessionAndFail(refreshError, hasStorage)),
+    switchMap((response) => next(withToken(originalRequest, response.accessToken!)))
+  );
+}
 
+function getOrStartRefresh(
+  authService: Authentication,
+  hasStorage: boolean
+): Observable<AuthenticationResponse> | null {
+  if (refreshInProgress$) return refreshInProgress$;
 
-/*import { HttpInterceptorFn } from '@angular/common/http';
+  const request$ = authService.refreshToken();
+  if (!request$) return null;
 
-export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  
-  let authToken: string | null = null;
-  
-  // Safely check if localStorage is available (browser environment)
-  try {
-    if (typeof window !== 'undefined' && typeof window.localStorage !== 'undefined') {
-      authToken = localStorage.getItem('authToken');
+  refreshInProgress$ = request$.pipe(
+    tap((response) => {
+      if (!response?.accessToken) throw new Error('Refresh response did not contain an access token');
+      if (hasStorage) {
+        localStorage.setItem('authToken', response.accessToken);
+        if (response.refreshToken) localStorage.setItem('refreshToken', response.refreshToken);
+      }
+    }),
+    finalize(() => (refreshInProgress$ = null)),
+    shareReplay({ bufferSize: 1, refCount: false })
+  );
+  return refreshInProgress$;
+}
+
+function withToken(request: HttpRequest<unknown>, token: string) {
+  return request.clone({ setHeaders: { Authorization: `Bearer ${token}` } });
+}
+
+function clearSessionAndFail(error: unknown, hasStorage: boolean) {
+  if (hasStorage) {
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('refreshToken');
+    if (!redirectingToLogin) {
+      redirectingToLogin = true;
+      window.location.href = '/';
     }
-  } catch (error) {
-    console.warn('localStorage is not available in this environment');
   }
-
-  if (authToken) {
-    const authReq = req.clone({
-      headers: req.headers.set('Authorization', `Bearer ${authToken}`)
-    });
-    return next(authReq);
-  }
-  
-  return next(req);
-};*/
+  return throwError(() => error ?? new Error('Authentication required'));
+}
