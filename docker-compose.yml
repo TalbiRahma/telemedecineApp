@@ -50,7 +50,7 @@ services:
 
   backend:
     build:
-      context: .
+      context: ./backend
       dockerfile: Dockerfile
     environment:
       DB_URL: ${DB_URL:-jdbc:postgresql://postgres:5432/telemedecineapi}
@@ -97,11 +97,26 @@ services:
   frontend:
     build:
       context: ./angular-frontend
-    ports:
-      - "${FRONTEND_PORT:-80}:80"
+    expose:
+      - "80"
     depends_on:
       backend:
         condition: service_healthy
+    networks:
+      - medilink-network
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - frontend
     networks:
       - medilink-network
 
@@ -109,7 +124,8 @@ volumes:
   postgres_data:
   ai_sessions:
   huggingface_cache:
-
+  caddy_data:
+  caddy_config:
 networks:
   medilink-network:
     driver: bridge

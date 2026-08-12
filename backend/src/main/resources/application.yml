@@ -27,7 +27,7 @@ spring:
             required: true
 
 app:
-  frontend-url: ${FRONTEND_URL:http://localhost:4200}
+  frontend-url: ${FRONTEND_URL:https://medilink-care.duckdns.org}
   bootstrap-admin:
     enabled: ${ADMIN_BOOTSTRAP_ENABLED:false}
     email: ${ADMIN_BOOTSTRAP_EMAIL:}

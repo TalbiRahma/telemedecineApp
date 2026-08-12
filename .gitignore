@@ -1,0 +1,9 @@
+.env
+
+# Local environment secrets
+.env
+**/.env
+
+# Keep examples
+!.env.example
+!**/.env.example
