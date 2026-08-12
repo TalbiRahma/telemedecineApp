@@ -1,13 +1,17 @@
 import { Component } from '@angular/core';
-import { NgIf } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthenticationRequest } from '../../models/auth/authentication-request';
 import { Authentication } from '../../services/auth/authentication';
+import {
+  DemoAccount,
+  getDemoAccountsConfiguration
+} from '../../config/demo-accounts.config';
 
 @Component({
   selector: 'app-login',
-  imports: [NgIf, FormsModule, RouterLink],
+  imports: [NgFor, NgIf, FormsModule, RouterLink],
   templateUrl: './login.html',
   styleUrl: './login.scss'
 })
@@ -16,11 +20,20 @@ export class Login {
   showPassword = false;
   loginError = '';
   isLoading = false;
+  readonly demoConfiguration = getDemoAccountsConfiguration();
+  demoExpanded = false;
+  selectedDemoRole: DemoAccount['role'] | null = null;
 
   constructor(
     private authService: Authentication,
     private router: Router
   ) {}
+
+  useDemoAccount(account: DemoAccount): void {
+    this.authRequest = { email: account.email, password: account.password };
+    this.selectedDemoRole = account.role;
+    this.loginError = '';
+  }
 
   authenticate(): void {
     if (this.isLoading) return;

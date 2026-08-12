@@ -31,7 +31,8 @@
             ],
             "styles": [
               "src/styles.scss",
-              "src/styles/admin.scss"
+              "src/styles/admin.scss",
+              "src/styles/demo-access.scss"
             ],
             "server": "src/main.server.ts",
             "outputMode": "static",
@@ -93,7 +94,8 @@
             ],
             "styles": [
               "src/styles.scss",
-              "src/styles/admin.scss"
+              "src/styles/admin.scss",
+              "src/styles/demo-access.scss"
             ]
           }
         }

@@ -1,6 +1,102 @@
 <div class="login-page">
   <section class="brand-panel">
-    <div class="brand-content"><a class="brand" routerLink="/"><span class="brand-mark"><span class="material-icons-outlined">favorite</span></span><span>Medi<em>Link</em></span></a><div class="brand-message"><span class="eyebrow">Healthcare, connected</span><h1>Your care journey,<br>made simpler.</h1><p>Book appointments, connect with trusted specialists, and manage your health from one calm, secure place.</p><div class="trust-points"><span><span class="material-icons-outlined">verified_user</span>Secure and private</span><span><span class="material-icons-outlined">schedule</span>Care when you need it</span></div></div><div class="care-card"><span class="material-icons-outlined">medical_services</span><div><strong>Trusted medical care</strong><small>Designed around you and your wellbeing.</small></div></div></div>
+    <div class="brand-content">
+      <a class="brand" routerLink="/">
+        <span class="brand-mark"><span class="material-icons-outlined">favorite</span></span>
+        <span>Medi<em>Link</em></span>
+      </a>
+      <div class="brand-message">
+        <span class="eyebrow">Healthcare, connected</span>
+        <h1>Your care journey,<br />made simpler.</h1>
+        <p>Book appointments, connect with trusted specialists, and manage your health from one calm, secure place.</p>
+        <div class="trust-points">
+          <span><span class="material-icons-outlined">verified_user</span>Secure and private</span>
+          <span><span class="material-icons-outlined">schedule</span>Care when you need it</span>
+        </div>
+      </div>
+      <div class="care-card">
+        <span class="material-icons-outlined">medical_services</span>
+        <div><strong>Trusted medical care</strong><small>Designed around you and your wellbeing.</small></div>
+      </div>
+    </div>
   </section>
-  <main class="login-panel"><div class="login-wrap"><div class="mobile-brand brand"><span class="brand-mark"><span class="material-icons-outlined">favorite</span></span><span>Medi<em>Link</em></span></div><div class="login-heading"><span class="welcome-icon material-icons-outlined">waving_hand</span><h2>Welcome back</h2><p>Sign in to your MediLink account.</p></div><div *ngIf="loginError" class="med-alert med-alert-error"><span class="material-icons-outlined">error_outline</span>{{ loginError }}</div><form class="login-form" (ngSubmit)="authenticate()"><div><label class="med-label" for="email">Email address</label><div class="input-wrap"><span class="material-icons-outlined">mail_outline</span><input id="email" class="med-input" type="email" name="email" required autocomplete="email" [(ngModel)]="authRequest.email" placeholder="name@example.com"></div></div><div><div class="password-label"><label class="med-label" for="password">Password</label><a routerLink="/forgot-password">Forgot password?</a></div><div class="input-wrap"><span class="material-icons-outlined">lock_outline</span><input id="password" class="med-input password-input" [type]="showPassword ? 'text' : 'password'" name="password" required autocomplete="current-password" [(ngModel)]="authRequest.password" placeholder="Enter your password"><button class="password-toggle" type="button" [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'" (click)="showPassword = !showPassword"><span class="material-icons-outlined">{{ showPassword ? 'visibility_off' : 'visibility' }}</span></button></div></div><button class="med-btn med-btn-primary sign-in" type="submit" [disabled]="isLoading" [attr.aria-busy]="isLoading">{{ isLoading ? 'Signing in…' : 'Sign in' }} <span *ngIf="!isLoading" class="material-icons-outlined">arrow_forward</span></button></form><div class="register-prompt">New to MediLink? <a routerLink="/register">Create an account</a></div><p class="legal">By continuing, you agree to use MediLink responsibly and keep your account secure.</p></div></main>
+
+  <main class="login-panel">
+    <div class="login-wrap">
+      <div class="auth-core">
+        <div class="mobile-brand brand">
+          <span class="brand-mark"><span class="material-icons-outlined">favorite</span></span>
+          <span>Medi<em>Link</em></span>
+        </div>
+        <div class="login-heading">
+          <span class="welcome-icon material-icons-outlined">waving_hand</span>
+          <h2>Welcome back</h2>
+          <p>Sign in to your MediLink account.</p>
+        </div>
+        <div *ngIf="loginError" class="med-alert med-alert-error">
+          <span class="material-icons-outlined">error_outline</span>{{ loginError }}
+        </div>
+        <form class="login-form" (ngSubmit)="authenticate()">
+          <div>
+            <label class="med-label" for="email">Email address</label>
+            <div class="input-wrap">
+              <span class="material-icons-outlined">mail_outline</span>
+              <input id="email" class="med-input" type="email" name="email" required autocomplete="email" [(ngModel)]="authRequest.email" placeholder="name@example.com" />
+            </div>
+          </div>
+          <div>
+            <div class="password-label">
+              <label class="med-label" for="password">Password</label>
+              <a routerLink="/forgot-password">Forgot password?</a>
+            </div>
+            <div class="input-wrap">
+              <span class="material-icons-outlined">lock_outline</span>
+              <input id="password" class="med-input password-input" [type]="showPassword ? 'text' : 'password'" name="password" required autocomplete="current-password" [(ngModel)]="authRequest.password" placeholder="Enter your password" />
+              <button class="password-toggle" type="button" [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'" (click)="showPassword = !showPassword">
+                <span class="material-icons-outlined">{{ showPassword ? 'visibility_off' : 'visibility' }}</span>
+              </button>
+            </div>
+          </div>
+          <button class="med-btn med-btn-primary sign-in" type="submit" [disabled]="isLoading" [attr.aria-busy]="isLoading">
+            {{ isLoading ? 'Signing in…' : 'Sign in' }}
+            <span *ngIf="!isLoading" class="material-icons-outlined">arrow_forward</span>
+          </button>
+        </form>
+      </div>
+
+      <section *ngIf="demoConfiguration.enabled" class="demo-access" aria-labelledby="demo-access-title">
+        <button class="demo-toggle" type="button" [attr.aria-expanded]="demoExpanded" aria-controls="demo-account-list" (click)="demoExpanded = !demoExpanded">
+          <span class="demo-toggle-icon material-icons-outlined">science</span>
+          <span><strong id="demo-access-title">Try MediLink with a demo account</strong><small>Quick access for demonstration</small></span>
+          <span class="demo-chevron material-icons-outlined" [class.expanded]="demoExpanded">expand_more</span>
+        </button>
+
+        <div *ngIf="demoExpanded" id="demo-account-list" class="demo-content">
+          <div class="demo-grid">
+            <article *ngFor="let account of demoConfiguration.accounts" class="demo-card" [class.selected]="selectedDemoRole === account.role">
+              <div class="demo-card-heading">
+                <span class="demo-role-icon material-icons-outlined">{{ account.icon }}</span>
+                <span><strong>{{ account.label }}</strong><small>{{ account.description }}</small></span>
+                <span class="role-badge" [attr.data-role]="account.role">{{ account.role }}</span>
+              </div>
+              <dl class="demo-credentials">
+                <div><dt>Email</dt><dd>{{ account.email }}</dd></div>
+                <div><dt>Password</dt><dd>{{ account.password }}</dd></div>
+              </dl>
+              <button class="demo-use-button" type="button" (click)="useDemoAccount(account)">
+                <span class="material-icons-outlined">input</span>
+                {{ selectedDemoRole === account.role ? 'Account selected' : 'Use this account' }}
+              </button>
+            </article>
+          </div>
+          <p class="demo-note"><span class="material-icons-outlined">info</span>Demo accounts contain fictional data and are intended for demonstration only.</p>
+        </div>
+      </section>
+
+      <div class="auth-core">
+        <div class="register-prompt">New to MediLink? <a routerLink="/register">Create an account</a></div>
+        <p class="legal">By continuing, you agree to use MediLink responsibly and keep your account secure.</p>
+      </div>
+    </div>
+  </main>
 </div>

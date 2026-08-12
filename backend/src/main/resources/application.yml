@@ -32,6 +32,11 @@ app:
     enabled: ${ADMIN_BOOTSTRAP_ENABLED:false}
     email: ${ADMIN_BOOTSTRAP_EMAIL:}
     password: ${ADMIN_BOOTSTRAP_PASSWORD:}
+  seed:
+    enabled: ${SEED_ENABLED:false}
+    admin-email: ${SEED_ADMIN_EMAIL:}
+    admin-password: ${SEED_ADMIN_PASSWORD:}
+    default-password: ${SEED_DEFAULT_PASSWORD:}
 
 ai:
   service:

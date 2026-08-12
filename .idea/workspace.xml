@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="a800bf7d-a6f8-447b-91d0-288ae6788e14" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/angular-frontend/angular.json" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/angular.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/angular-frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/angular-frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/app.routes.server.ts" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/app.routes.server.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/app.routes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/app.routes.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/components/two-fa/two-fa.ts" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/components/two-fa/two-fa.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/interceptors/auth-interceptor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/interceptors/auth-interceptor.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/models/auth/authentication-response.ts" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/models/auth/authentication-response.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/models/auth/verification-request.ts" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/models/auth/verification-request.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/models/doctor.ts" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/models/doctor.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/pages/admin-dashboard-page/admin-dashboard-page.html" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/pages/admin-dashboard-page/admin-dashboard-page.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/pages/admin-dashboard-page/admin-dashboard-page.scss" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/pages/admin-dashboard-page/admin-dashboard-page.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/pages/admin-dashboard-page/admin-dashboard-page.ts" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/pages/admin-dashboard-page/admin-dashboard-page.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/pages/admin-doctors-list-page/admin-doctors-list-page.html" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/pages/admin-doctors-list-page/admin-doctors-list-page.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/pages/admin-doctors-list-page/admin-doctors-list-page.ts" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/pages/admin-doctors-list-page/admin-doctors-list-page.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/pages/admin-overview-page/admin-overview-page.html" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/pages/admin-overview-page/admin-overview-page.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/pages/admin-overview-page/admin-overview-page.ts" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/pages/admin-overview-page/admin-overview-page.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/pages/admin-specialties-list-page/admin-specialties-list-page.html" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/pages/admin-specialties-list-page/admin-specialties-list-page.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/pages/admin-specialties-list-page/admin-specialties-list-page.ts" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/pages/admin-specialties-list-page/admin-specialties-list-page.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/pages/doctor-appointments/doctor-appointments.html" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/pages/doctor-appointments/doctor-appointments.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/pages/doctor-appointments/doctor-appointments.scss" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/pages/doctor-appointments/doctor-appointments.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/pages/doctor-appointments/doctor-appointments.ts" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/pages/doctor-appointments/doctor-appointments.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/pages/doctor-dashboard-page/doctor-dashboard-page.html" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/pages/doctor-dashboard-page/doctor-dashboard-page.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/pages/doctor-dashboard-page/doctor-dashboard-page.scss" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/pages/doctor-dashboard-page/doctor-dashboard-page.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/pages/doctor-dashboard-page/doctor-dashboard-page.ts" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/pages/doctor-dashboard-page/doctor-dashboard-page.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/pages/doctor-overview/doctor-overview.html" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/pages/doctor-overview/doctor-overview.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/pages/doctor-overview/doctor-overview.scss" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/pages/doctor-overview/doctor-overview.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/pages/doctor-overview/doctor-overview.ts" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/pages/doctor-overview/doctor-overview.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/pages/login/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/pages/login/login.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/pages/login/login.scss" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/pages/login/login.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/pages/login/login.ts" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/pages/login/login.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/pages/patient-dashboard-page/patient-dashboard-page.html" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/pages/patient-dashboard-page/patient-dashboard-page.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/pages/patient-dashboard-page/patient-dashboard-page.scss" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/pages/patient-dashboard-page/patient-dashboard-page.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/pages/patient-dashboard-page/patient-dashboard-page.ts" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/pages/patient-dashboard-page/patient-dashboard-page.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/pages/register/register.html" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/pages/register/register.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/pages/register/register.scss" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/pages/register/register.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/pages/register/register.ts" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/pages/register/register.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/pages/two-fa-page/two-fa-page.html" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/pages/two-fa-page/two-fa-page.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/pages/two-fa-page/two-fa-page.scss" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/pages/two-fa-page/two-fa-page.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/pages/two-fa-page/two-fa-page.ts" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/pages/two-fa-page/two-fa-page.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/services/auth/authentication.ts" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/services/auth/authentication.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/services/doctor/doctor-service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/services/doctor/doctor-service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/services/specialty/specialty-service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/services/specialty/specialty-service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/angular-frontend/src/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/angular-frontend/src/styles.scss" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/styles.scss" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="HTML File" />
+        <option value="TypeScript File" />
+        <option value="HTTP Request" />
+        <option value="JUnit5 Test Class" />
+        <option value="Enum" />
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HttpClientOnboardingState">{
+  &quot;isOnboardingCommentShown&quot;: true
+}</component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="30vP3tmsAR3mwrNVxIGXDoeMIHZ" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.TelemedecineApplication.executor&quot;: &quot;Run&quot;,
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;HTTP Request.All in change-password.executor&quot;: &quot;Run&quot;,
+    &quot;HTTP Request.All in specialty-test.executor&quot;: &quot;Run&quot;,
+    &quot;HTTP Request.http-test | Register User.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.SpecialtyServiceImplTest.executor&quot;: &quot;Run&quot;,
+    &quot;Maven.telemedecine [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.telemedecine [compile].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.telemedecine [install].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.telemedecine [verify].executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;Spring Boot.TelemedecineApplication.executor&quot;: &quot;Run&quot;,
+    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary&quot;: &quot;JUnit5&quot;,
+    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5&quot;: &quot;&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Rahma Talbi/Desktop/5 GL Project/telemedecineApp&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;MavenSettings&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\Rahma Talbi\\Desktop\\telemedecineApp\\angular-frontend\\node_modules\\typescript\\lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;postgresql&quot;
+    ]
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="com.telemedecine.api.model.appointement" />
+      <recent name="com.telemedecine.api.presentation.controller" />
+      <recent name="com.telemedecine.api.application.service" />
+      <recent name="com.telemedecine.api.security.token" />
+      <recent name="com.telemedecine.api.security" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Rahma Talbi\Desktop\telemedecineApp\angular-frontend\src\app\pages\models" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Rahma Talbi\Desktop\telemedecineApp\angular-frontend\src\app\pages" />
+    </key>
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
+    </key>
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="com.telemedecine.api.speciality" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.telemedecine.api.dao" />
+      <recent name="com.telemedecine.api.auth" />
+      <recent name="com.telemedecine.api.presentation.controller" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Spring Boot.TelemedecineApplication">
+    <configuration name="All in change-password" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" path="$PROJECT_DIR$/http/change-password.http">
+      <method v="2" />
+    </configuration>
+    <configuration name="All in specialty-test" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" path="$PROJECT_DIR$/http/specialty-test.http">
+      <method v="2" />
+    </configuration>
+    <configuration name="http-test | Register User" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$PROJECT_DIR$/http/http-test.http" executionIdentifier="Register User" index="2" runType="Run single request">
+      <method v="2" />
+    </configuration>
+    <configuration name="SpecialtyServiceImplTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="telemedecine" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.telemedecine.api.controller.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.telemedecine.api.speciality" />
+      <option name="MAIN_CLASS_NAME" value="com.telemedecine.api.speciality.SpecialtyServiceImplTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TelemedecineApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <envs>
+        <env name="SMTP_HOST" value="smtp.gmail.com" />
+        <env name="SMTP_PORT" value="587" />
+        <env name="SMTP_USERNAME" value="talbirahma73@gmail.com" />
+        <env name="SMTP_PASSWORD" value="tqssvtiuxwhwlfoh" />
+        <env name="FRONTEND_URL" value="http://localhost:4200" />
+        <env name="PASSWORD_RESET_EXPIRATION_MINUTES" value="20" />
+        <env name="PASSWORD_RESET_REQUEST_COOLDOWN_SECONDS" value="60" />
+      </envs>
+      <module name="telemedecine" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.telemedecine.api.TelemedecineApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="HTTP Request.All in change-password" />
+      <item itemvalue="HTTP Request.All in specialty-test" />
+      <item itemvalue="HTTP Request.http-test | Register User" />
+      <item itemvalue="JUnit.SpecialtyServiceImplTest" />
+      <item itemvalue="Spring Boot.TelemedecineApplication" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="HTTP Request.All in change-password" />
+        <item itemvalue="JUnit.SpecialtyServiceImplTest" />
+        <item itemvalue="HTTP Request.All in specialty-test" />
+        <item itemvalue="HTTP Request.http-test | Register User" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.25557.131" />
+        <option value="bundled-js-predefined-d6986cc7102b-b598e85cdad2-JavaScript-IU-252.25557.131" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="a800bf7d-a6f8-447b-91d0-288ae6788e14" name="Changes" comment="" />
+      <created>1754504878417</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1754504878417</updated>
+      <workItem from="1754504883974" duration="2631000" />
+      <workItem from="1754560421915" duration="3018000" />
+      <workItem from="1754757756944" duration="10618000" />
+      <workItem from="1754845864665" duration="7428000" />
+      <workItem from="1755080408516" duration="19798000" />
+      <workItem from="1755182379311" duration="7809000" />
+      <workItem from="1755263959292" duration="4414000" />
+      <workItem from="1755341320727" duration="52000" />
+      <workItem from="1755341800668" duration="18877000" />
+      <workItem from="1755429790192" duration="1973000" />
+      <workItem from="1755540399997" duration="601000" />
+      <workItem from="1756808747945" duration="15408000" />
+      <workItem from="1757070049087" duration="8000" />
+      <workItem from="1757091627909" duration="34000" />
+      <workItem from="1757168813174" duration="1145000" />
+      <workItem from="1757170141693" duration="13026000" />
+      <workItem from="1757257287849" duration="9589000" />
+      <workItem from="1757357376912" duration="5251000" />
+      <workItem from="1757437668182" duration="7358000" />
+      <workItem from="1757455545772" duration="117000" />
+      <workItem from="1757497935855" duration="9656000" />
+      <workItem from="1757684693673" duration="17058000" />
+      <workItem from="1757769782815" duration="3718000" />
+      <workItem from="1757847990000" duration="15407000" />
+      <workItem from="1758035472917" duration="4817000" />
+      <workItem from="1758106996800" duration="7224000" />
+      <workItem from="1758211136986" duration="10932000" />
+      <workItem from="1758385816720" duration="6885000" />
+      <workItem from="1758478850136" duration="9296000" />
+      <workItem from="1759166989378" duration="1759000" />
+      <workItem from="1759220265897" duration="10255000" />
+      <workItem from="1759251759513" duration="4270000" />
+      <workItem from="1759501838411" duration="12237000" />
+      <workItem from="1759663477807" duration="3652000" />
+      <workItem from="1759682302320" duration="535000" />
+      <workItem from="1759780508115" duration="2000" />
+      <workItem from="1759943198801" duration="1398000" />
+      <workItem from="1760271493112" duration="12729000" />
+      <workItem from="1760724325967" duration="2031000" />
+      <workItem from="1760774235496" duration="48000" />
+      <workItem from="1760777451767" duration="64000" />
+      <workItem from="1760777548747" duration="3140000" />
+      <workItem from="1761155001525" duration="609000" />
+      <workItem from="1761677374458" duration="313000" />
+      <workItem from="1761735639334" duration="874000" />
+      <workItem from="1761769690127" duration="1092000" />
+      <workItem from="1762375484029" duration="29000" />
+      <workItem from="1762796103557" duration="1342000" />
+      <workItem from="1762889803682" duration="3117000" />
+      <workItem from="1763043956740" duration="5716000" />
+      <workItem from="1763461755061" duration="10179000" />
+      <workItem from="1763512926004" duration="72000" />
+      <workItem from="1763544917598" duration="939000" />
+      <workItem from="1763912975729" duration="631000" />
+      <workItem from="1764005222394" duration="2418000" />
+      <workItem from="1764070293954" duration="5536000" />
+      <workItem from="1764077368853" duration="5000" />
+      <workItem from="1764078144520" duration="675000" />
+      <workItem from="1764103457033" duration="1209000" />
+      <workItem from="1764357464856" duration="32000" />
+      <workItem from="1764924428800" duration="26000" />
+      <workItem from="1771942609742" duration="58000" />
+      <workItem from="1771946070286" duration="316000" />
+      <workItem from="1784822770809" duration="162000" />
+      <workItem from="1786110463618" duration="8391000" />
+      <workItem from="1786184748051" duration="5558000" />
+      <workItem from="1786269515592" duration="7602000" />
+      <workItem from="1786441435657" duration="3085000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
