@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import jakarta.persistence.LockModeType;
@@ -18,6 +19,8 @@ public interface SlotRepository extends JpaRepository<Slot, Long> {
     @Query("select slot from Slot slot join fetch slot.availability availability join fetch availability.doctor where slot.id = :id")
     Optional<Slot> findByIdForBooking(@Param("id") Long id);
     List<Slot> findByAvailability(DoctorAvailability availability);
+    Optional<Slot> findFirstByAvailabilityIdAndStartTimeAndEndTime(
+            Long availabilityId, LocalTime startTime, LocalTime endTime);
     @Query("SELECT s FROM Slot s WHERE s.availability.doctor.id = :doctorId AND s.status = :status AND s.availability.date BETWEEN :fromDate AND :toDate")
     List<Slot> findByDoctorIdAndStatusAndDateBetween(
             @Param("doctorId") Long doctorId,

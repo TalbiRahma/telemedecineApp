@@ -1,7 +1,10 @@
 package com.telemedecine.api.config;
 
 import com.telemedecine.api.dao.DoctorRepository;
+import com.telemedecine.api.dao.DoctorAvailabilityRepository;
+import com.telemedecine.api.dao.AppointmentRepository;
 import com.telemedecine.api.dao.PatientRepository;
+import com.telemedecine.api.dao.SlotRepository;
 import com.telemedecine.api.dao.SpecialtyRepository;
 import com.telemedecine.api.dao.UserRepository;
 import com.telemedecine.api.model.Specialty;
@@ -11,6 +14,12 @@ import com.telemedecine.api.model.user.Role;
 import com.telemedecine.api.model.user.UserEntity;
 import com.telemedecine.api.model.user.doctor.Doctor;
 import com.telemedecine.api.model.user.doctor.DoctorState;
+import com.telemedecine.api.model.user.doctor.DoctorAvailability;
+import com.telemedecine.api.model.user.doctor.AvailabilityType;
+import com.telemedecine.api.model.slot.Slot;
+import com.telemedecine.api.model.slot.SlotStatus;
+import com.telemedecine.api.model.appointement.Appointment;
+import com.telemedecine.api.model.appointement.AppointmentStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,6 +32,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -39,6 +50,9 @@ public class DataSeeder implements ApplicationRunner {
     private final PatientRepository patientRepository;
     private final SpecialtyRepository specialtyRepository;
     private final PasswordEncoder passwordEncoder;
+    private final DoctorAvailabilityRepository availabilityRepository;
+    private final SlotRepository slotRepository;
+    private final AppointmentRepository appointmentRepository;
 
     @Value("${app.seed.admin-email:}")
     private String adminEmail;
@@ -59,10 +73,14 @@ public class DataSeeder implements ApplicationRunner {
         int adminsCreated = seedSuperAdmin();
         int doctorsCreated = seedDoctors(specialties);
         int patientsCreated = seedPatients();
+        SeedCount availabilities = seedDoctorAvailabilities();
+        SeedCount appointments = seedAppointments();
 
-        log.info("MediLink database seed completed: {} specialties available, {} super admin, {} doctors, {} patients created",
+        log.info("MediLink database seed completed: {} specialties available, {} super admin, {} doctors, "
+                        + "{} patients, {} availability rules, {} appointments created ({} availabilities and {} appointments skipped)",
                 specialties.size(),
-                adminsCreated, doctorsCreated, patientsCreated);
+                adminsCreated, doctorsCreated, patientsCreated, availabilities.created(), appointments.created(),
+                availabilities.skipped(), appointments.skipped());
     }
 
     private void validateConfiguration() {
@@ -221,6 +239,168 @@ public class DataSeeder implements ApplicationRunner {
         return created;
     }
 
+    /**
+     * Creates five deterministic recurring rules for each of the first ten confirmed demo doctors.
+     * The range covers historical dashboard data and the next two weeks, while the day-of-week
+     * selection always includes today and the following four days.
+     */
+    private SeedCount seedDoctorAvailabilities() {
+        LocalDate today = LocalDate.now();
+        LocalDate rangeStart = today.minusDays(14);
+        LocalDate rangeEnd = today.plusDays(14);
+        int created = 0;
+        int skipped = 0;
+
+        for (int doctorNumber = 1; doctorNumber <= 10; doctorNumber++) {
+            String email = "doctor%02d@medilink.demo".formatted(doctorNumber);
+            Doctor doctor = doctorRepository.findByEmailIgnoreCase(email).orElse(null);
+            if (doctor == null || doctor.getState() != DoctorState.CONFIRMED) {
+                log.info("Availability seed skipped for ineligible or missing demo doctor {}", email);
+                continue;
+            }
+
+            for (int dayOffset = 0; dayOffset < 5; dayOffset++) {
+                LocalDate occurrence = today.plusDays(dayOffset);
+                TimeWindow window = availabilityWindow(doctorNumber, dayOffset);
+                DoctorAvailability existing = availabilityRepository
+                        .findByDoctorIdAndType(doctor.getId(), AvailabilityType.RECURRING).stream()
+                        .filter(rule -> rule.getDayOfWeek() == occurrence.getDayOfWeek())
+                        .filter(rule -> window.start().equals(rule.getStartTime()))
+                        .filter(rule -> window.end().equals(rule.getEndTime()))
+                        .filter(rule -> Integer.valueOf(30).equals(rule.getSlotDuration()))
+                        .filter(rule -> !today.isBefore(rule.getStartDate()))
+                        .filter(rule -> rule.getEndDate() == null || !today.isAfter(rule.getEndDate()))
+                        .findFirst().orElse(null);
+                if (existing != null) {
+                    skipped++;
+                    continue;
+                }
+
+                DoctorAvailability availability = DoctorAvailability.builder()
+                        .doctor(doctor)
+                        .dayOfWeek(occurrence.getDayOfWeek())
+                        .startDate(rangeStart)
+                        .endDate(rangeEnd)
+                        .startTime(window.start())
+                        .endTime(window.end())
+                        .type(AvailabilityType.RECURRING)
+                        .slotDuration(30)
+                        .build();
+                availability = availabilityRepository.save(availability);
+                createSlots(availability);
+                created++;
+            }
+        }
+        log.info("Created {} availability rules; skipped {} existing rules", created, skipped);
+        return new SeedCount(created, skipped);
+    }
+
+    private void createSlots(DoctorAvailability availability) {
+        for (LocalTime start = availability.getStartTime();
+             !start.plusMinutes(availability.getSlotDuration()).isAfter(availability.getEndTime());
+             start = start.plusMinutes(availability.getSlotDuration())) {
+            LocalTime end = start.plusMinutes(availability.getSlotDuration());
+            if (slotRepository.findFirstByAvailabilityIdAndStartTimeAndEndTime(
+                    availability.getId(), start, end).isEmpty()) {
+                slotRepository.save(Slot.builder().availability(availability).startTime(start)
+                        .endTime(end).status(SlotStatus.FREE).build());
+            }
+        }
+    }
+
+    private SeedCount seedAppointments() {
+        LocalDate today = LocalDate.now();
+        List<AppointmentSeed> seeds = List.of(
+                appt(1, 3, 0, 9, 30, AppointmentStatus.CONFIRMED),
+                appt(1, 4, 0, 11, 0, AppointmentStatus.BOOKED),
+                appt(2, 2, 0, 14, 30, AppointmentStatus.CONFIRMED),
+                appt(3, 8, 0, 9, 30, AppointmentStatus.BOOKED),
+                appt(1, 1, 1, 10, 0, AppointmentStatus.CONFIRMED),
+                appt(1, 2, 2, 14, 30, AppointmentStatus.BOOKED),
+                appt(1, 5, 3, 10, 0, AppointmentStatus.CONFIRMED),
+                appt(2, 6, 1, 10, 30, AppointmentStatus.BOOKED),
+                appt(3, 7, 2, 15, 0, AppointmentStatus.CONFIRMED),
+                appt(4, 8, 3, 10, 30, AppointmentStatus.BOOKED),
+                appt(5, 9, 4, 9, 30, AppointmentStatus.CONFIRMED),
+                appt(6, 10, 1, 10, 0, AppointmentStatus.BOOKED),
+                appt(7, 2, 2, 9, 30, AppointmentStatus.CONFIRMED),
+                appt(8, 4, 4, 10, 30, AppointmentStatus.BOOKED),
+                appt(1, 1, -7, 9, 30, AppointmentStatus.COMPLETED),
+                appt(1, 6, -6, 10, 30, AppointmentStatus.COMPLETED),
+                appt(1, 7, -5, 14, 0, AppointmentStatus.COMPLETED),
+                appt(2, 3, -7, 14, 30, AppointmentStatus.COMPLETED),
+                appt(3, 4, -6, 10, 30, AppointmentStatus.COMPLETED),
+                appt(4, 5, -5, 9, 30, AppointmentStatus.COMPLETED),
+                appt(5, 8, -4, 14, 0, AppointmentStatus.COMPLETED),
+                appt(6, 9, -7, 10, 0, AppointmentStatus.COMPLETED),
+                appt(1, 1, -4, 11, 0, AppointmentStatus.CANCELED),
+                appt(9, 10, -7, 9, 30, AppointmentStatus.CANCELED)
+        );
+
+        int created = 0;
+        int skipped = 0;
+        for (AppointmentSeed seed : seeds) {
+            Doctor doctor = doctorRepository.findByEmailIgnoreCase(seed.doctorEmail()).orElse(null);
+            Patient patient = patientRepository.findByEmailIgnoreCase(seed.patientEmail()).orElse(null);
+            LocalDateTime start = today.plusDays(seed.dayOffset()).atTime(seed.time());
+            if (doctor == null || patient == null || doctor.getState() != DoctorState.CONFIRMED) {
+                skipped++;
+                continue;
+            }
+            Slot slot = findApplicableSlot(doctor, start);
+            if (slot == null) {
+                log.warn("Appointment seed skipped because no matching availability exists for doctor {}", doctor.getId());
+                skipped++;
+                continue;
+            }
+            if (appointmentRepository.existsBySlotAvailabilityDoctorIdAndPatientIdAndScheduledStart(
+                    doctor.getId(), patient.getId(), start)
+                    || appointmentRepository.existsBySlotAvailabilityDoctorIdAndScheduledStart(
+                    doctor.getId(), start)) {
+                skipped++;
+                continue;
+            }
+            appointmentRepository.save(Appointment.builder()
+                    .bookedAt(start.minusDays(3))
+                    .scheduledStart(start)
+                    .scheduledEnd(start.toLocalDate().atTime(slot.getEndTime()))
+                    .status(seed.status())
+                    .slot(slot)
+                    .patient(patient)
+                    .build());
+            created++;
+        }
+        log.info("Created {} appointments; skipped {} existing or unavailable appointments", created, skipped);
+        return new SeedCount(created, skipped);
+    }
+
+    private Slot findApplicableSlot(Doctor doctor, LocalDateTime start) {
+        return availabilityRepository.findByDoctorIdAndType(doctor.getId(), AvailabilityType.RECURRING).stream()
+                .filter(rule -> rule.getDayOfWeek() == start.getDayOfWeek())
+                .filter(rule -> !start.toLocalDate().isBefore(rule.getStartDate()))
+                .filter(rule -> rule.getEndDate() == null || !start.toLocalDate().isAfter(rule.getEndDate()))
+                .flatMap(rule -> slotRepository.findByAvailability(rule).stream())
+                .filter(slot -> slot.getStartTime().equals(start.toLocalTime()))
+                .findFirst().orElse(null);
+    }
+
+    private TimeWindow availabilityWindow(int doctorNumber, int dayOffset) {
+        if (doctorNumber == 1) return new TimeWindow(LocalTime.of(9, 0), LocalTime.of(15, 30));
+        int pattern = (doctorNumber + dayOffset) % 3;
+        return switch (pattern) {
+            case 0 -> new TimeWindow(LocalTime.of(9, 0), LocalTime.of(13, 0));
+            case 1 -> new TimeWindow(LocalTime.of(10, 0), LocalTime.of(14, 0));
+            default -> new TimeWindow(LocalTime.of(14, 0), LocalTime.of(18, 0));
+        };
+    }
+
+    private AppointmentSeed appt(int doctor, int patient, int offset, int hour, int minute,
+                                 AppointmentStatus status) {
+        return new AppointmentSeed("doctor%02d@medilink.demo".formatted(doctor),
+                "patient%02d@medilink.demo".formatted(patient), offset,
+                LocalTime.of(hour, minute), status);
+    }
+
     private void initializeUser(UserEntity user, String firstname, String lastname, String email,
                                 String rawPassword, Role role, String phone) {
         user.setFirstname(firstname);
@@ -253,4 +433,9 @@ public class DataSeeder implements ApplicationRunner {
 
     private record PatientSeed(String firstname, String lastname, String gender, LocalDate dateOfBirth) {
     }
+
+    private record TimeWindow(LocalTime start, LocalTime end) { }
+    private record AppointmentSeed(String doctorEmail, String patientEmail, int dayOffset,
+                                   LocalTime time, AppointmentStatus status) { }
+    private record SeedCount(int created, int skipped) { }
 }

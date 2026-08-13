@@ -29,15 +29,19 @@
       <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/pages/doctor-appointments/doctor-appointments.ts" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/pages/doctor-appointments/doctor-appointments.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/pages/doctor-dashboard-page/doctor-dashboard-page.html" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/pages/doctor-dashboard-page/doctor-dashboard-page.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/pages/doctor-dashboard-page/doctor-dashboard-page.scss" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/pages/doctor-dashboard-page/doctor-dashboard-page.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/pages/doctor-dashboard-page/doctor-dashboard-page.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/pages/doctor-dashboard-page/doctor-dashboard-page.spec.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/pages/doctor-dashboard-page/doctor-dashboard-page.ts" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/pages/doctor-dashboard-page/doctor-dashboard-page.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/pages/doctor-overview/doctor-overview.html" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/pages/doctor-overview/doctor-overview.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/pages/doctor-overview/doctor-overview.scss" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/pages/doctor-overview/doctor-overview.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/pages/doctor-overview/doctor-overview.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/pages/doctor-overview/doctor-overview.spec.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/pages/doctor-overview/doctor-overview.ts" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/pages/doctor-overview/doctor-overview.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/pages/login/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/pages/login/login.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/pages/login/login.scss" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/pages/login/login.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/pages/login/login.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/pages/login/login.spec.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/pages/login/login.ts" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/pages/login/login.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/pages/patient-dashboard-page/patient-dashboard-page.html" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/pages/patient-dashboard-page/patient-dashboard-page.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/pages/patient-dashboard-page/patient-dashboard-page.scss" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/pages/patient-dashboard-page/patient-dashboard-page.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/pages/patient-dashboard-page/patient-dashboard-page.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/pages/patient-dashboard-page/patient-dashboard-page.spec.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/pages/patient-dashboard-page/patient-dashboard-page.ts" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/pages/patient-dashboard-page/patient-dashboard-page.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/pages/register/register.html" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/pages/register/register.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/pages/register/register.scss" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/pages/register/register.scss" afterDir="false" />
@@ -45,6 +49,7 @@
       <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/pages/two-fa-page/two-fa-page.html" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/pages/two-fa-page/two-fa-page.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/pages/two-fa-page/two-fa-page.scss" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/pages/two-fa-page/two-fa-page.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/pages/two-fa-page/two-fa-page.ts" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/pages/two-fa-page/two-fa-page.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/services/auth/authentication.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/services/auth/authentication.spec.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/services/auth/authentication.ts" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/services/auth/authentication.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/services/doctor/doctor-service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/services/doctor/doctor-service.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/angular-frontend/src/app/services/specialty/specialty-service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/angular-frontend/src/app/services/specialty/specialty-service.ts" afterDir="false" />
@@ -304,6 +309,7 @@
       <workItem from="1786184748051" duration="5558000" />
       <workItem from="1786269515592" duration="7602000" />
       <workItem from="1786441435657" duration="3085000" />
+      <workItem from="1786616222686" duration="58000" />
     </task>
     <servers />
   </component>
