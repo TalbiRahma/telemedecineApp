@@ -4,7 +4,6 @@
   <div *ngSwitchCase="'ready'" class="dashboard-content">
     <section class="hero-panel">
       <div class="hero-copy"><span class="eyebrow">Your health overview</span><h1>Hello, {{ patient?.firstname || 'Patient' }}</h1><p>Welcome to MediLink. Here’s a summary of your health activity.</p><div class="hero-actions"><a class="med-btn med-btn-primary" routerLink="/patient-dashboard/find-doctor"><span class="material-icons-outlined">search</span>Find a doctor</a><a class="med-btn med-btn-secondary" routerLink="/patient-dashboard/appointments">View appointments</a></div></div>
-      <div class="hero-visual" aria-hidden="true"><span class="visual-orbit orbit-one"></span><span class="visual-orbit orbit-two"></span><span class="visual-center"><span class="material-icons-outlined">health_and_safety</span></span><span class="visual-chip chip-top"><span class="material-icons-outlined">favorite</span></span><span class="visual-chip chip-bottom"><span class="material-icons-outlined">medical_services</span></span></div>
     </section>
     <div class="dashboard-grid">
       <section class="med-card content-card appointment-card"><div class="card-heading"><div><span class="heading-icon aqua"><span class="material-icons-outlined">calendar_month</span></span><h2>Next appointment</h2></div><a routerLink="/patient-dashboard/appointments">View all <span class="material-icons-outlined">arrow_forward</span></a></div>

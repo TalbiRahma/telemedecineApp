@@ -2,7 +2,7 @@
   <section class="brand-panel">
     <div class="brand-content">
       <a class="brand" routerLink="/">
-        <span class="brand-mark"><span class="material-icons-outlined">favorite</span></span>
+        <span class="brand-mark" aria-hidden="true"><span class="material-icons-outlined">add</span></span>
         <span>Medi<em>Link</em></span>
       </a>
       <div class="brand-message">
@@ -25,7 +25,7 @@
     <div class="login-wrap">
       <div class="auth-core">
         <div class="mobile-brand brand">
-          <span class="brand-mark"><span class="material-icons-outlined">favorite</span></span>
+          <span class="brand-mark" aria-hidden="true"><span class="material-icons-outlined">add</span></span>
           <span>Medi<em>Link</em></span>
         </div>
         <div class="login-heading">
@@ -72,20 +72,16 @@
         </button>
 
         <div *ngIf="demoExpanded" id="demo-account-list" class="demo-content">
-          <div class="demo-grid">
+          <div class="demo-list">
             <article *ngFor="let account of demoConfiguration.accounts" class="demo-card" [class.selected]="selectedDemoRole === account.role">
-              <div class="demo-card-heading">
-                <span class="demo-role-icon material-icons-outlined">{{ account.icon }}</span>
-                <span><strong>{{ account.label }}</strong><small>{{ account.description }}</small></span>
-                <span class="role-badge" [attr.data-role]="account.role">{{ account.role }}</span>
+              <span class="demo-role-icon material-icons-outlined" aria-hidden="true">{{ account.icon }}</span>
+              <div class="demo-account-copy">
+                <div class="demo-card-heading"><strong>{{ account.label }}</strong><span class="role-badge" [attr.data-role]="account.role">{{ account.role }}</span></div>
+                <small>{{ account.description }}</small>
+                <div class="demo-credentials"><span>{{ account.email }}</span><span>{{ account.password }}</span></div>
               </div>
-              <dl class="demo-credentials">
-                <div><dt>Email</dt><dd>{{ account.email }}</dd></div>
-                <div><dt>Password</dt><dd>{{ account.password }}</dd></div>
-              </dl>
               <button class="demo-use-button" type="button" (click)="useDemoAccount(account)">
-                <span class="material-icons-outlined">input</span>
-                {{ selectedDemoRole === account.role ? 'Account selected' : 'Use this account' }}
+                {{ selectedDemoRole === account.role ? 'Selected' : 'Use' }}
               </button>
             </article>
           </div>

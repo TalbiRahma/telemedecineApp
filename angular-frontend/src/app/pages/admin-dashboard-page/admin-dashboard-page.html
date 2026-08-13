@@ -2,7 +2,7 @@
   <button *ngIf="sidebarOpen" class="admin-backdrop" type="button" aria-label="Close navigation" (click)="toggleSidebar()"></button>
   <aside class="admin-sidebar" [class.open]="sidebarOpen" aria-label="Administration navigation">
     <div class="admin-brand">
-      <span class="admin-brand-mark"><span class="material-icons-outlined">favorite</span></span>
+      <span class="admin-brand-mark" aria-hidden="true"><span class="material-icons-outlined">add</span></span>
       <span class="admin-brand-copy"><strong>Medi<span>Link</span></strong><small>Admin console</small></span>
       <button class="admin-mobile-close" type="button" aria-label="Close menu" (click)="toggleSidebar()"><span class="material-icons-outlined">close</span></button>
     </div>

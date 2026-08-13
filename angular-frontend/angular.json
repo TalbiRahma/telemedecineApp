@@ -32,7 +32,8 @@
             "styles": [
               "src/styles.scss",
               "src/styles/admin.scss",
-              "src/styles/demo-access.scss"
+              "src/styles/demo-access.scss",
+              "src/styles/ui-refinements.scss"
             ],
             "server": "src/main.server.ts",
             "outputMode": "static",
@@ -95,7 +96,8 @@
             "styles": [
               "src/styles.scss",
               "src/styles/admin.scss",
-              "src/styles/demo-access.scss"
+              "src/styles/demo-access.scss",
+              "src/styles/ui-refinements.scss"
             ]
           }
         }

@@ -1,0 +1,177 @@
+/* Shared calm visual language for authentication and role workspaces. */
+.login-page .brand-mark,
+.doctor-shell .brand-mark,
+.patient-shell .brand-mark,
+.admin-shell .admin-brand-mark {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border: 1px solid #b9dfe4;
+  border-radius: 50%;
+  color: var(--primary-dark);
+  background: #eaf8f9;
+  box-shadow: none;
+}
+
+.login-page .brand-mark .material-icons-outlined,
+.doctor-shell .brand-mark .material-icons-outlined,
+.patient-shell .brand-mark .material-icons-outlined,
+.admin-shell .admin-brand-mark .material-icons-outlined {
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.doctor-shell .brand-copy,
+.patient-shell .brand-copy {
+  min-width: 0;
+  display: grid;
+  gap: 1px;
+}
+
+.patient-shell .brand-copy small {
+  color: var(--text-muted);
+  font-size: .67rem;
+}
+
+.doctor-shell .support-card,
+.patient-shell .support-card,
+.admin-shell .admin-context {
+  background: #f7fbfc;
+  box-shadow: none;
+}
+
+.doctor-shell .doctor-avatar,
+.patient-shell .patient-avatar,
+.admin-shell .admin-avatar {
+  border: 1px solid #c7e5e8;
+  color: var(--primary-dark);
+  background: #e6f6f7;
+  box-shadow: none;
+}
+
+/* Doctor overview */
+.doctor-shell .overview-page .hero-panel {
+  min-height: 196px;
+  padding: 30px 32px;
+  border-color: var(--border);
+  border-radius: 20px;
+  background: #f5fbfb;
+  box-shadow: none;
+}
+
+.doctor-shell .overview-page .doctor-hero-avatar {
+  width: 62px;
+  height: 62px;
+  border: 1px solid #c1e3e7;
+  border-radius: 50%;
+  color: var(--primary-dark);
+  background: #e4f5f6;
+  box-shadow: none;
+}
+
+.doctor-shell .overview-page .hero-main > div {
+  min-width: 0;
+}
+
+.doctor-shell .overview-page .hero-main h1 {
+  overflow-wrap: anywhere;
+}
+
+.doctor-shell .overview-page .stat-card {
+  min-height: 116px;
+  border-color: var(--border);
+  box-shadow: none;
+}
+
+.doctor-shell .overview-page .stat-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
+  color: var(--primary-dark);
+  background: #edf8f9;
+}
+
+.doctor-shell .overview-page .stat-icon.blue,
+.doctor-shell .overview-page .stat-icon.violet {
+  color: var(--primary-dark);
+  background: #edf8f9;
+}
+
+.doctor-shell .overview-page .section-card {
+  box-shadow: none;
+}
+
+/* Patient overview */
+.patient-shell .dashboard-content .hero-panel {
+  min-height: 230px;
+  justify-content: flex-start;
+  padding: 34px 38px;
+  border-color: var(--border);
+  border-radius: 20px;
+  background: #f5fbfb;
+  box-shadow: none;
+}
+
+.patient-shell .dashboard-content .eyebrow {
+  padding: 0;
+  background: transparent;
+}
+
+.patient-shell .dashboard-content .content-card {
+  border-color: var(--border);
+  box-shadow: none;
+}
+
+.patient-shell .dashboard-content .heading-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  color: var(--primary-dark);
+  background: #edf8f9;
+}
+
+.patient-shell .dashboard-content .heading-icon.blue {
+  color: var(--primary-dark);
+  background: #edf8f9;
+}
+
+.patient-shell .dashboard-content .appointment-body,
+.patient-shell .dashboard-content .empty-state {
+  padding: 16px 0 0;
+  border: 0;
+  border-top: 1px solid #edf2f4;
+  border-radius: 0;
+  background: transparent;
+}
+
+.patient-shell .dashboard-content .quick-card {
+  border-color: var(--border);
+  background: #fff;
+}
+
+.patient-shell .dashboard-content .quick-card:hover {
+  border-color: #b9dfe4;
+  box-shadow: none;
+  transform: none;
+}
+
+.patient-shell .dashboard-content .quick-icon {
+  color: var(--primary-dark);
+  background: #edf8f9;
+}
+
+@media (max-width: 700px) {
+  .doctor-shell .overview-page .hero-panel,
+  .patient-shell .dashboard-content .hero-panel {
+    padding: 24px 20px;
+  }
+
+  .doctor-shell .overview-page .hero-main {
+    width: 100%;
+  }
+
+  .doctor-shell .overview-page .doctor-hero-avatar {
+    width: 56px;
+    height: 56px;
+  }
+}

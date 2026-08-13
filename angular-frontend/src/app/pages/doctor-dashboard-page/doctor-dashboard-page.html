@@ -1,7 +1,7 @@
 <div class="doctor-shell">
   <div class="mobile-backdrop" [class.visible]="menuOpen" (click)="toggleMenu()"></div>
   <aside class="doctor-sidebar" [class.open]="menuOpen" aria-label="Doctor navigation">
-    <div class="brand"><span class="brand-mark"><span class="material-icons-outlined">favorite</span></span><span class="brand-copy"><strong>Medi<span>Link</span></strong><small>Doctor portal</small></span><button class="mobile-close" type="button" aria-label="Close menu" (click)="toggleMenu()"><span class="material-icons-outlined">close</span></button></div>
+    <div class="brand"><span class="brand-mark" aria-hidden="true"><span class="material-icons-outlined">add</span></span><span class="brand-copy"><strong>Medi<span>Link</span></strong><small>Doctor portal</small></span><button class="mobile-close" type="button" aria-label="Close menu" (click)="toggleMenu()"><span class="material-icons-outlined">close</span></button></div>
     <p class="nav-label">Doctor workspace</p>
     <nav class="doctor-nav"><a *ngFor="let item of navItems" [routerLink]="item.path" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"><span class="material-icons-outlined">{{ item.icon }}</span><span>{{ item.label }}</span></a></nav>
     <div class="sidebar-bottom"><div class="support-card"><span class="material-icons-outlined">event_available</span><strong>Care starts with your schedule</strong><p>Manage appointments and availability efficiently.</p></div><button class="logout-button" type="button" (click)="onLogout()"><span class="material-icons-outlined">logout</span>Logout</button></div>
