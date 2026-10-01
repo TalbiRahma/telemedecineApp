@@ -36,7 +36,7 @@ load_dotenv()
 INDEX_DIR = Path(os.environ.get("INDEX_DIR", "faiss_index"))
 EMBED_MODEL = os.environ.get("EMBED_MODEL", "sentence-transformers/all-mpnet-base-v2")
 
-GROQ_MODEL = os.environ.get("GROQ_MODEL", "llama-3.3-70b-versatile")
+GROQ_MODEL = os.environ.get("GROQ_MODEL", "openai/gpt-oss-120b")
 GROQ_TEMPERATURE = float(os.environ.get("GROQ_TEMPERATURE", "0.2"))
 
 # --- Memory config ---
@@ -140,6 +140,7 @@ class RagService:
      '  "red_flags": [{{"symptom": "string", "action": "string"}}],\n'
      '  "doctor": {{"specialty": "string", "when": "string"}},\n'
      '  "follow_up_questions": ["string", "string"],\n'
+     'Return exactly 2 or 3 follow_up_questions. Never return more than 3.\n'
      '  "disclaimer": "string"\n'
      "}}\n\n"
      "Rules:\n"
@@ -218,7 +219,12 @@ class RagService:
             )
             repaired = self.llm.invoke(repair_prompt).content
             json_str2 = extract_json(repaired)
-            answer_obj = StructuredAnswer.model_validate_json(json_str2)
+        data = json.loads(json_str2)
+
+        if isinstance(data.get("follow_up_questions"), list):
+            data["follow_up_questions"] = data["follow_up_questions"][:3]
+
+        answer_obj = StructuredAnswer.model_validate(data)
 
         # 5) Update recent memory (keep it light)
         # We store a compact assistant note, not the whole JSON, to keep memory clean.
