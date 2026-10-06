@@ -16,27 +16,49 @@ from langchain_core.prompts import ChatPromptTemplate
 
 
 def extract_json(text: str) -> str:
-        """
-        Attempts to extract a JSON object from LLM output.
-        """
-        text = text.strip()
-        # If output is already JSON
-        if text.startswith("{") and text.endswith("}"):
-            return text
+    """Extract the first JSON object from an LLM response."""
+    text = text.strip()
+    decoder = json.JSONDecoder()
+    for match in re.finditer(r"\{", text):
+        candidate = text[match.start():]
+        try:
+            value, end = decoder.raw_decode(candidate)
+        except json.JSONDecodeError:
+            continue
+        if isinstance(value, dict):
+            return candidate[:end]
 
-        # Try find first {...} block
-        match = re.search(r"\{.*\}", text, re.DOTALL)
-        if match:
-            return match.group(0)
+    return text
 
-        return text  # fallback
+
+def normalize_structured_answer(data: dict) -> dict:
+    """Apply safe, non-generative normalization before schema validation."""
+    if not isinstance(data, dict):
+        raise TypeError("The structured answer must be a JSON object")
+
+    normalized = data.copy()
+    follow_up_questions = normalized.get("follow_up_questions")
+    if not isinstance(follow_up_questions, list):
+        raise TypeError("follow_up_questions must be a list")
+
+    normalized["follow_up_questions"] = follow_up_questions[:3]
+    return normalized
+
+
+def parse_structured_answer(raw: str) -> StructuredAnswer:
+    """Extract, decode, normalize, and validate one LLM response."""
+    data = json.loads(extract_json(raw))
+    normalized = normalize_structured_answer(data)
+    return StructuredAnswer.model_validate(normalized)
+
+
 load_dotenv()
 
 # --- RAG config ---
 INDEX_DIR = Path(os.environ.get("INDEX_DIR", "faiss_index"))
 EMBED_MODEL = os.environ.get("EMBED_MODEL", "sentence-transformers/all-mpnet-base-v2")
 
-GROQ_MODEL = os.environ.get("GROQ_MODEL", "llama-3.3-70b-versatile")
+GROQ_MODEL = os.environ.get("GROQ_MODEL", "openai/gpt-oss-120b")
 GROQ_TEMPERATURE = float(os.environ.get("GROQ_TEMPERATURE", "0.2"))
 
 # --- Memory config ---
@@ -144,6 +166,7 @@ class RagService:
      "}}\n\n"
      "Rules:\n"
      "- Output JSON ONLY. No markdown, no code fences.\n"
+     "- follow_up_questions must contain exactly 2 or 3 useful questions. Never return more than 3.\n"
      "- Differential must be 3 to 5 items.\n"
      "- doctor.specialty must be a concise canonical medical specialty name in uppercase "
      "(for example CARDIOLOGY, DERMATOLOGY, GENERAL_MEDICINE), never a doctor name.\n"
@@ -183,6 +206,25 @@ class RagService:
             new_summary = new_summary[:SUMMARY_MAX_CHARS]
         return new_summary
 
+    def _parse_answer_with_one_repair(self, raw: str) -> StructuredAnswer:
+        try:
+            return parse_structured_answer(raw)
+        except (json.JSONDecodeError, TypeError, ValidationError):
+            repair_prompt = (
+                "Fix the following content into valid JSON matching the requested medical "
+                "answer schema. Return valid JSON only, with no markdown or code fences. "
+                "follow_up_questions must be a JSON list containing exactly 2 or 3 useful "
+                "questions; never return more than 3. Do not invent medical facts merely to "
+                "satisfy the schema.\n\nCONTENT:\n" + raw
+            )
+            repaired = self.llm.invoke(repair_prompt).content
+            try:
+                return parse_structured_answer(repaired)
+            except (json.JSONDecodeError, TypeError, ValidationError) as repair_error:
+                raise ValueError(
+                    "LLM response remained invalid after one repair attempt"
+                ) from repair_error
+
     def chat(self, session_id: str, message: str) -> dict:
     # 1) Load state (summary + recent messages)
         state = load_state(session_id)
@@ -205,20 +247,7 @@ class RagService:
 
         # 4) LLM call -> parse JSON -> validate with Pydantic
         raw = self.llm.invoke(formatted).content
-        json_str = extract_json(raw)
-
-        try:
-            answer_obj = StructuredAnswer.model_validate_json(json_str)
-        except ValidationError:
-            # 4b) One-shot repair attempt
-            repair_prompt = (
-                "Fix the following content into VALID JSON that matches the schema exactly. "
-                "Return JSON only (no markdown, no code fences).\n\n"
-                "CONTENT:\n" + raw
-            )
-            repaired = self.llm.invoke(repair_prompt).content
-            json_str2 = extract_json(repaired)
-            answer_obj = StructuredAnswer.model_validate_json(json_str2)
+        answer_obj = self._parse_answer_with_one_repair(raw)
 
         # 5) Update recent memory (keep it light)
         # We store a compact assistant note, not the whole JSON, to keep memory clean.
