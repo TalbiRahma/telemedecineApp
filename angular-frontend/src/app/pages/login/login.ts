@@ -30,9 +30,12 @@ export class Login {
   ) {}
 
   useDemoAccount(account: DemoAccount): void {
+    if (!this.demoConfiguration.enabled || this.isLoading) return;
+
     this.authRequest = { email: account.email, password: account.password };
     this.selectedDemoRole = account.role;
     this.loginError = '';
+    this.authenticate();
   }
 
   authenticate(): void {

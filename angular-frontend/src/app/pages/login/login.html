@@ -80,8 +80,14 @@
                 <small>{{ account.description }}</small>
                 <div class="demo-credentials"><span>{{ account.email }}</span><span>{{ account.password }}</span></div>
               </div>
-              <button class="demo-use-button" type="button" (click)="useDemoAccount(account)">
-                {{ selectedDemoRole === account.role ? 'Selected' : 'Use' }}
+              <button
+                class="demo-use-button"
+                type="button"
+                [disabled]="isLoading"
+                [attr.aria-busy]="isLoading && selectedDemoRole === account.role"
+                (click)="useDemoAccount(account)"
+              >
+                {{ isLoading && selectedDemoRole === account.role ? 'Signing in…' : 'Use' }}
               </button>
             </article>
           </div>
